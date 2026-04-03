@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Track Your Shipment — ThunderSnow</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&f[]=cabinet-grotesk@800,700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    /* ─────────────────────────────────────────────
+       DESIGN TOKENS
+    ───────────────────────────────────────────── */
+    :root {
+      --bg:           #FFFFFF;
+      --section-bg:   #F7F9FC;
+      --border:       #E5E7EB;
+      --brand:        #1E88D8;
+      --brand-hover:  #41A5DD;
+      --brand-light:  rgba(30, 136, 216, 0.08);
+      --accent:       #F4B400;
+      --text-1:       #1A1A1A;
+      --text-2:       #4B5563;
+      --text-3:       #6B7280;
+      --success:      #16A34A;
+      --success-bg:   rgba(22, 163, 74, 0.08);
+      --warning:      #D97706;
+      --warning-bg:   rgba(217, 119, 6, 0.08);
+      --error:        #DC2626;
+      --error-bg:     rgba(220, 38, 38, 0.08);
+      --radius-sm:    10px;
+      --radius-md:    16px;
+      --radius-lg:    24px;
+      --radius-xl:    32px;
+      --shadow-sm:    0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
+      --shadow-md:    0 2px 8px rgba(0,0,0,0.07), 0 8px 24px rgba(0,0,0,0.05);
+      --shadow-lg:    0 4px 16px rgba(0,0,0,0.08), 0 16px 48px rgba(0,0,0,0.06);
+      --ease-out:     cubic-bezier(0.16, 1, 0.3, 1);
+      --font-display: 'Cabinet Grotesk', sans-serif;
+      --font-body:    'Satoshi', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text-1);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.6;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─────────────────────────────────────────────
+       NAV
+    ───────────────────────────────────────────── */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: center;
+      padding: 20px 24px;
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 10px 10px 10px 20px;
+      max-width: 720px;
+      width: 100%;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .nav-logo {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 17px;
+      color: var(--brand);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-logo img {
+      height: 32px;
+      width: auto;
+      display: block;
+    }
+
+    .nav-badge {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-3);
+      letter-spacing: 0.04em;
+    }
+
+    /* ─────────────────────────────────────────────
+       HERO / SEARCH SECTION
+    ───────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 120px 24px 80px;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--brand);
+      padding: 6px 14px;
+      background: var(--brand-light);
+      border: 1px solid rgba(30,136,216,0.18);
+      border-radius: 100px;
+      margin-bottom: 28px;
+    }
+
+    .eyebrow-dot {
+      width: 6px; height: 6px;
+      background: var(--brand);
+      border-radius: 50%;
+      animation: pulse 2s ease infinite;
+    }
+
+    @keyframes pulse {
+      0%,100% { opacity:1; transform:scale(1); }
+      50%      { opacity:.4; transform:scale(.7); }
+    }
+
+    .hero-headline {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(36px, 5vw, 60px);
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+      color: var(--text-1);
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .hero-headline .blue { color: var(--brand); }
+
+    .hero-sub {
+      font-size: 17px;
+      color: var(--text-2);
+      text-align: center;
+      max-width: 480px;
+      margin-bottom: 48px;
+      line-height: 1.65;
+    }
+
+    /* ─────────────────────────────────────────────
+       SEARCH BOX
+    ───────────────────────────────────────────── */
+    .search-card {
+      width: 100%;
+      max-width: 580px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 6px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .search-inner {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      padding: 6px 6px 6px 20px;
+    }
+
+    .search-icon {
+      color: var(--text-3);
+      flex-shrink: 0;
+      width: 20px; height: 20px;
+    }
+
+    .search-input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-family: var(--font-body);
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text-1);
+      background: transparent;
+      min-width: 0;
+    }
+
+    .search-input::placeholder { color: var(--text-3); font-weight: 400; }
+
+    .search-btn {
+      flex-shrink: 0;
+      background: var(--brand);
+      color: #fff;
+      font-family: var(--font-body);
+      font-size: 15px;
+      font-weight: 700;
+      padding: 12px 24px;
+      border-radius: calc(var(--radius-xl) - 8px);
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s var(--ease-out);
+      white-space: nowrap;
+    }
+
+    .search-btn:hover:not(:disabled) {
+      background: var(--brand-hover);
+      transform: scale(1.03);
+    }
+
+    .search-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .search-hint {
+      font-size: 12px;
+      color: var(--text-3);
+      text-align: center;
+      margin-top: 14px;
+    }
+
+    .wa-support {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 28px;
+      padding: 14px 24px;
+      background: rgba(37, 211, 102, 0.08);
+      border: 1px solid rgba(37, 211, 102, 0.25);
+      border-radius: 100px;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.2s;
+      max-width: 360px;
+      width: 100%;
+    }
+    .wa-support:hover {
+      background: rgba(37, 211, 102, 0.15);
+      transform: translateY(-1px);
+    }
+    .wa-support-icon {
+      flex-shrink: 0;
+      color: #25D366;
+    }
+    .wa-support-text {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+    }
+    .wa-support-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-2);
+    }
+    .wa-support-number {
+      font-size: 15px;
+      font-weight: 700;
+      color: #1A1A1A;
+      direction: ltr;
+    }
+    [dir="rtl"] .wa-support-text { text-align: right; }
+    [dir="rtl"] .wa-support { flex-direction: row-reverse; }
+
+    /* ─────────────────────────────────────────────
+       RESULT AREA
+    ───────────────────────────────────────────── */
+    .result-area {
+      width: 100%;
+      max-width: 640px;
+      margin-top: 32px;
+    }
+
+    /* ── Empty state ── */
+    .state-empty {
+      text-align: center;
+      padding: 40px 24px;
+    }
+
+    .state-empty-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      opacity: 0.35;
+    }
+
+    .state-empty-text {
+      font-size: 15px;
+      color: var(--text-3);
+    }
+
+    /* ── Loading state ── */
+    .state-loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      padding: 48px 24px;
+    }
+
+    .spinner {
+      width: 36px; height: 36px;
+      border: 3px solid var(--border);
+      border-top-color: var(--brand);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .state-loading-text {
+      font-size: 14px;
+      color: var(--text-3);
+    }
+
+    /* ── Error / not-found state ── */
+    .state-message {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 20px 24px;
+      border-radius: var(--radius-md);
+      border: 1px solid;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .state-message.error {
+      background: var(--error-bg);
+      border-color: rgba(220,38,38,0.18);
+      color: var(--error);
+    }
+
+    .state-message.not-found {
+      background: var(--warning-bg);
+      border-color: rgba(217,119,6,0.18);
+      color: var(--warning);
+    }
+
+    .state-message-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+
+    /* ── Result card ── */
+    .result-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+      animation: card-in 0.4s var(--ease-out) both;
+    }
+
+    @keyframes card-in {
+      from { opacity:0; transform: translateY(16px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+
+    /* Status header bar */
+    .card-header {
+      padding: 24px 28px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .card-header-left { display: flex; flex-direction: column; gap: 4px; }
+
+    .card-number {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 22px;
+      letter-spacing: -0.03em;
+      color: var(--text-1);
+    }
+
+    .card-ref {
+      font-size: 13px;
+      color: var(--text-3);
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding: 7px 14px;
+      border-radius: 100px;
+    }
+
+    .status-badge::before {
+      content: '';
+      width: 7px; height: 7px;
+      border-radius: 50%;
+    }
+
+    .status-delivered  { background: var(--success-bg); color: var(--success); }
+    .status-delivered::before  { background: var(--success); }
+    .status-in-transit { background: var(--brand-light); color: var(--brand); }
+    .status-in-transit::before { background: var(--brand); }
+    .status-pending    { background: var(--warning-bg); color: var(--warning); }
+    .status-pending::before    { background: var(--warning); animation: pulse 2s ease infinite; }
+    .status-failed     { background: var(--error-bg); color: var(--error); }
+    .status-failed::before     { background: var(--error); }
+    .status-default    { background: var(--section-bg); color: var(--text-2); }
+    .status-default::before    { background: var(--text-3); }
+
+    /* Card body: info grid */
+    .card-body { padding: 24px 28px; display: flex; flex-direction: column; gap: 0; }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+    }
+
+    .info-cell {
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .info-cell:nth-child(odd)  { padding-right: 24px; border-right: 1px solid var(--border); }
+    .info-cell:nth-child(even) { padding-left: 24px; }
+    .info-cell:nth-last-child(-n+2) { border-bottom: none; }
+
+    .info-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 5px;
+    }
+
+    .info-value {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-1);
+      line-height: 1.4;
+    }
+
+    .info-value.muted { color: var(--text-3); font-style: italic; }
+
+    /* Goods list */
+    .goods-section {
+      margin-top: 0;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .goods-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 12px;
+    }
+
+    .goods-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      background: var(--section-bg);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      color: var(--text-2);
+      margin-bottom: 6px;
+    }
+
+    .goods-item:last-child { margin-bottom: 0; }
+    .goods-qty { font-weight: 700; color: var(--text-1); }
+
+    /* POD / signature indicator */
+    .pod-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 16px;
+      margin-top: 20px;
+      background: var(--section-bg);
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      color: var(--text-2);
+    }
+
+    .pod-icon { font-size: 18px; }
+
+    /* Card footer */
+    .card-footer {
+      padding: 14px 28px;
+      border-top: 1px solid var(--border);
+      background: var(--section-bg);
+      font-size: 12px;
+      color: var(--text-3);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* ─────────────────────────────────────────────
+       FOOTER
+    ───────────────────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 32px 24px;
+      font-size: 13px;
+      color: var(--text-3);
+      border-top: 1px solid var(--border);
+    }
+
+    footer a { color: var(--brand); text-decoration: none; }
+
+    /* ─────────────────────────────────────────────
+       RESPONSIVE
+    ───────────────────────────────────────────── */
+    @media (max-width: 540px) {
+      .hero { padding: 100px 16px 60px; }
+      .hero-headline { font-size: clamp(30px, 9vw, 48px); }
+      .hero-sub { font-size: 15px; margin-bottom: 32px; }
+      .search-card { border-radius: var(--radius-lg); }
+      .search-inner { flex-direction: column; padding: 12px; gap: 10px; }
+      .search-input { font-size: 15px; }
+      .search-btn   { width: 100%; justify-content: center; border-radius: var(--radius-md); }
+      .result-area  { margin-top: 20px; }
+      .info-grid    { grid-template-columns: 1fr; }
+      .info-cell    { border-right: none !important; padding-left: 0 !important; padding-right: 0 !important; }
+      .info-cell:nth-last-child(-n+2) { border-bottom: 1px solid var(--border); }
+      .info-cell:last-child { border-bottom: none; }
+      .card-header  { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .card-number  { font-size: 18px; }
+      .card-body    { padding: 16px 20px; }
+      .card-footer  { padding: 12px 20px; flex-direction: column; gap: 4px; }
+      .nav-inner    { padding: 8px 8px 8px 16px; }
+    }
+
+    /* ── Lang button ──────────────────────────────────────────── */
+    .lang-btn {
+      display: flex; align-items: center; padding: 6px 14px;
+      background: var(--section-bg); border: 1px solid var(--border);
+      border-radius: 100px; font-family: inherit; font-size: 13px;
+      font-weight: 600; color: var(--text-2); cursor: pointer;
+      transition: background 0.2s, color 0.2s; white-space: nowrap;
+    }
+    .lang-btn:hover { background: var(--border); color: var(--text-1); }
+
+    /* ── RTL overrides ────────────────────────────────────────── */
+    [dir="rtl"] body { font-family: 'Tajawal', sans-serif; }
+    [dir="rtl"] .nav-inner { direction: rtl; }
+    [dir="rtl"] .hero { text-align: right; direction: rtl; }
+    [dir="rtl"] .search-inner { flex-direction: row-reverse; }
+    [dir="rtl"] .search-input { text-align: right; }
+    @media (max-width: 600px) {
+      [dir="rtl"] .search-inner { flex-direction: column; }
+      [dir="rtl"] .search-input { text-align: center; }
+    }
+    [dir="rtl"] .result-area { direction: rtl; text-align: right; }
+    [dir="rtl"] .info-grid { direction: rtl; }
+    [dir="rtl"] .info-item { text-align: right; }
+    [dir="rtl"] .card-header { direction: rtl; }
+    [dir="rtl"] footer { direction: rtl; }
+  </style>
+</head>
+<body>
+
+  <!-- ── NAV ──────────────────────────────────────────────────── -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="logo.svg" alt="ThunderSnow" height="32" style="display:block;width:auto;">
+      </a>
+      <span class="nav-badge" data-i18n="nav_badge">Shipment Tracking</span>
+      <button class="lang-btn" id="langBtn" onclick="toggleLanguage()">عربي</button>
+    </div>
+  </nav>
+
+  <!-- ── HERO ─────────────────────────────────────────────────── -->
+  <main class="hero">
+
+    <div class="hero-eyebrow">
+      <span class="eyebrow-dot"></span>
+      <span data-i18n="eyebrow">Real-Time Tracking</span>
+    </div>
+
+    <h1 class="hero-headline" data-i18n-html="headline">
+      Where is your<br><span class="blue">shipment?</span>
+    </h1>
+
+    <p class="hero-sub" data-i18n="hero_sub">
+      Enter your shipment number below to get live delivery status, driver info, and proof of delivery.
+    </p>
+
+    <!-- Search box -->
+    <div class="search-card">
+      <div class="search-inner">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        <input
+          id="searchInput"
+          class="search-input"
+          type="text"
+          inputmode="numeric"
+          placeholder="Enter shipment number (e.g. ORD-00123)"
+          data-i18n-placeholder="search_placeholder"
+          autocomplete="off"
+          autocorrect="off"
+          spellcheck="false"
+        />
+        <button class="search-btn" id="searchBtn" onclick="trackShipment()" data-i18n="search_btn">
+          Track Shipment
+        </button>
+      </div>
+    </div>
+
+
+    <!-- WhatsApp support -->
+    <a href="https://wa.me/966569915947" target="_blank" rel="noopener" class="wa-support">
+      <span class="wa-support-icon">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+          <path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.121 1.532 5.849L.057 23.268a.75.75 0 0 0 .906.919l5.487-1.44A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.944 9.944 0 0 1-5.031-1.362l-.361-.214-3.737.979 1.004-3.648-.235-.375A9.944 9.944 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/>
+        </svg>
+      </span>
+      <span class="wa-support-label" data-i18n="wa_label">Contact Us</span>
+    </a>
+
+    <!-- Result area -->
+    <div class="result-area" id="resultArea">
+      <!-- Empty state -->
+      <div class="state-empty" id="stateEmpty">
+        <div class="state-empty-icon">📦</div>
+        <p class="state-empty-text" data-i18n="empty_text">Enter a shipment number above to see tracking details.</p>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ── FOOTER ────────────────────────────────────────────────── -->
+  <footer>
+    &copy; 2026 ThunderSnow &nbsp;·&nbsp;
+    Powered by <a href="https://track-pod.com" target="_blank" rel="noopener">Track-POD</a>
+  </footer>
+
+
+  <script>
+    /* ═══════════════════════════════════════════════════════════════
+       CONFIGURATION
+       Change PROXY_BASE_URL to where your Node.js proxy is running.
+    ═══════════════════════════════════════════════════════════════ */
+    const PROXY_BASE_URL = 'https://thundersnow-proxy-production.up.railway.app';
+
+    /* ═══════════════════════════════════════════════════════════════
+       DOM REFS
+    ═══════════════════════════════════════════════════════════════ */
+    const searchInput = document.getElementById('searchInput');
+    const searchBtn   = document.getElementById('searchBtn');
+    const resultArea  = document.getElementById('resultArea');
+
+    // Allow pressing Enter to search
+    searchInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') trackShipment();
+    });
+
+    /* ═══════════════════════════════════════════════════════════════
+       MAIN TRACK FUNCTION
+    ═══════════════════════════════════════════════════════════════ */
+    async function trackShipment() {
+      const number = searchInput.value.trim();
+
+      if (!number) {
+        searchInput.focus();
+        return;
+      }
+
+      showLoading();
+      searchBtn.disabled = true;
+
+      try {
+        const res  = await fetch(`${PROXY_BASE_URL}/api/track/${encodeURIComponent(number)}`);
+        const data = await res.json();
+
+        if (res.status === 404) {
+          showNotFound(number);
+        } else if (!res.ok) {
+          showError(data.error || 'An unexpected error occurred. Please try again.');
+        } else {
+          showResult(data);
+        }
+      } catch (err) {
+        showError('Could not reach the tracking service. Please check your connection and try again.');
+        console.error(err);
+      } finally {
+        searchBtn.disabled = false;
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       STATE RENDERERS
+    ═══════════════════════════════════════════════════════════════ */
+
+    function showLoading() {
+      resultArea.innerHTML = `
+        <div class="state-loading">
+          <div class="spinner"></div>
+          <p class="state-loading-text">Looking up your shipment…</p>
+        </div>`;
+    }
+
+    function showError(message) {
+      resultArea.innerHTML = `
+        <div class="state-message error">
+          <span class="state-message-icon">⚠️</span>
+          <span>${escHtml(message)}</span>
+        </div>`;
+    }
+
+    function showNotFound(number) {
+      resultArea.innerHTML = `
+        <div class="state-message not-found">
+          <span class="state-message-icon">🔍</span>
+          <span>No shipment found for <strong>${escHtml(number)}</strong>. Please double-check the number and try again.</span>
+        </div>`;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       RESULT CARD RENDERER
+    ═══════════════════════════════════════════════════════════════ */
+    function showResult(order) {
+      const statusInfo = resolveStatus(order.status, order.statusCode);
+
+      const fmtDate = (iso) => {
+        if (!iso) return null;
+        try {
+          return new Date(iso).toLocaleDateString('en-SA', {
+            day: '2-digit', month: 'short', year: 'numeric',
+            hour: '2-digit', minute: '2-digit'
+          });
+        } catch { return iso; }
+      };
+
+      const fmtDateOnly = (iso) => {
+        if (!iso) return null;
+        try {
+          return new Date(iso).toLocaleDateString('en-SA', {
+            day: '2-digit', month: 'short', year: 'numeric'
+          });
+        } catch { return iso; }
+      };
+
+      const deliveryWindow = order.plannedDate
+        ? fmtDateOnly(order.plannedDate)
+        : buildWindow(order.plannedFrom, order.plannedTo);
+
+      const goodsHtml = buildGoodsHtml(order.goodsList);
+      const podHtml = buildPodHtml(order.podStatus);
+
+      resultArea.innerHTML = `
+        <div class="result-card">
+
+          <div class="card-header">
+            <div class="card-header-left">
+              <div class="card-number">${escHtml(order.shipmentNumber || '—')}</div>
+              ${order.referenceId
+                ? `<div class="card-ref">Ref: ${escHtml(order.referenceId)}</div>`
+                : ''}
+            </div>
+            <span class="status-badge ${statusInfo.cls}">${escHtml(statusInfo.label)}</span>
+          </div>
+
+          <div class="card-body">
+            <div class="info-grid">
+
+              <div class="info-cell">
+                <div class="info-label">Customer</div>
+                <div class="info-value ${!order.customerName ? 'muted' : ''}">
+                  ${escHtml(order.customerName || 'Not available')}
+                </div>
+              </div>
+
+              <div class="info-cell">
+                <div class="info-label">Driver</div>
+                <div class="info-value ${!order.driverName ? 'muted' : ''}">
+                  ${escHtml(order.driverName || 'Not assigned')}
+                  ${order.driverVehicle ? `<br><small style="color:var(--text-3)">${escHtml(order.driverVehicle)}</small>` : ''}
+                </div>
+              </div>
+
+              <div class="info-cell">
+                <div class="info-label">Delivery Address</div>
+                <div class="info-value ${!order.deliveryAddress ? 'muted' : ''}">
+                  ${escHtml(order.deliveryAddress || 'Not available')}
+                  ${order.addressZone ? `<br><small style="color:var(--text-3)">${escHtml(order.addressZone)}</small>` : ''}
+                </div>
+              </div>
+
+              <div class="info-cell">
+                <div class="info-label">Planned Delivery</div>
+                <div class="info-value ${!deliveryWindow ? 'muted' : ''}">
+                  ${escHtml(deliveryWindow || 'Not scheduled')}
+                </div>
+              </div>
+
+              <div class="info-cell">
+                <div class="info-label">Order Date</div>
+                <div class="info-value ${!order.orderDate ? 'muted' : ''}">
+                  ${escHtml(fmtDateOnly(order.orderDate) || 'Not available')}
+                </div>
+              </div>
+
+              <div class="info-cell">
+                <div class="info-label">Delivered On</div>
+                <div class="info-value ${!order.completedDate ? 'muted' : ''}">
+                  ${escHtml(fmtDate(order.completedDate) || '—')}
+                </div>
+              </div>
+
+              ${order.barcode ? `
+              <div class="info-cell">
+                <div class="info-label">Barcode</div>
+                <div class="info-value">${escHtml(order.barcode)}</div>
+              </div>` : ''}
+
+              ${order.weight ? `
+              <div class="info-cell">
+                <div class="info-label">Weight</div>
+                <div class="info-value">${escHtml(String(order.weight))} kg</div>
+              </div>` : ''}
+
+              ${order.shipper ? `
+              <div class="info-cell">
+                <div class="info-label">Shipper</div>
+                <div class="info-value">${escHtml(order.shipper)}</div>
+              </div>` : ''}
+
+              ${order.phone ? `
+              <div class="info-cell">
+                <div class="info-label">Contact</div>
+                <div class="info-value">${escHtml(order.phone)}</div>
+              </div>` : ''}
+
+              ${order.note ? `
+              <div class="info-cell" style="grid-column: 1 / -1">
+                <div class="info-label">Note</div>
+                <div class="info-value">${escHtml(order.note)}</div>
+              </div>` : ''}
+
+            </div>
+
+            ${goodsHtml}
+            ${podHtml}
+
+
+          </div>
+
+          <div class="card-footer">
+            <span>Last updated: ${escHtml(fmtDate(order.lastUpdated) || 'Unknown')}</span>
+            <span style="color:var(--brand); font-weight:600;">ThunderSnow</span>
+          </div>
+
+        </div>`;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       STATUS RESOLVER
+    ═══════════════════════════════════════════════════════════════ */
+    function resolveStatus(status, statusCode) {
+      if (!status && !statusCode) return { label: 'Unknown', cls: 'status-default' };
+
+      const raw = (status || statusCode || '').toString().toLowerCase();
+
+      const map = [
+        { keys: ['delivered','completed','done','complete'],                                   label: 'Delivered',        cls: 'status-delivered'  },
+        { keys: ['out for delivery'],                                                          label: 'Out for Delivery', cls: 'status-in-transit' },
+        { keys: ['in transit','in_transit','intransit','inprogress','in progress','started'],  label: 'In Transit',       cls: 'status-in-transit' },
+        { keys: ['scheduled','pending','not started','notstarted','new','assigned','waiting'], label: 'Scheduled',        cls: 'status-pending'    },
+        { keys: ['failed','rejected','cancelled','canceled','undelivered','exception'],        label: 'Failed',           cls: 'status-failed'     },
+      ];
+
+      for (const entry of map) {
+        if (entry.keys.some(k => raw.includes(k))) {
+          return { label: entry.label, cls: entry.cls };
+        }
+      }
+
+      return {
+        label: status || statusCode,
+        cls:   'status-default'
+      };
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       HELPERS
+    ═══════════════════════════════════════════════════════════════ */
+    function buildWindow(from, to) {
+      if (!from && !to) return null;
+      const fmt = (iso) => {
+        if (!iso) return '';
+        try {
+          return new Date(iso).toLocaleDateString('en-SA', {
+            day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+          });
+        } catch { return iso; }
+      };
+      if (from && to) return `${fmt(from)} – ${fmt(to)}`;
+      return fmt(from || to);
+    }
+
+    function buildGoodsHtml(goods) {
+      if (!goods || goods.length === 0) return '';
+      const items = goods.map(g => `
+        <div class="goods-item">
+          <span>${escHtml(g.GoodsName || g.GoodsId || 'Item')}</span>
+          <span class="goods-qty">× ${escHtml(String(g.Quantity ?? 1))}</span>
+        </div>`).join('');
+      return `
+        <div class="goods-section">
+          <div class="goods-title">Items in Shipment</div>
+          ${items}
+        </div>`;
+    }
+
+    function buildPodHtml(podStatus) {
+      if (!podStatus) return '';
+      const icon  = podStatus.toLowerCase().includes('sign') ? '✍️' : '📋';
+      return `
+        <div class="pod-row">
+          <span class="pod-icon">${icon}</span>
+          <span><strong>Proof of Delivery:</strong> ${escHtml(podStatus)}</span>
+        </div>`;
+    }
+
+    function escHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;')
+        .replace(/'/g,'&#039;');
+    }
+  </script>
+
+  <script>
+    // ── Arabic / English i18n ─────────────────────────────────
+    const trackTranslations = {
+      en: {
+        nav_badge: 'Shipment Tracking',
+        eyebrow: 'Real-Time Tracking',
+        headline: 'Where is your<br><span class="blue">shipment?</span>',
+        hero_sub: 'Enter your shipment number below to get live delivery status, driver info, and proof of delivery.',
+        search_placeholder: 'Enter shipment number (e.g. ORD-00123)',
+        search_btn: 'Track Shipment',
+        search_hint: 'Your shipment number is printed on your delivery confirmation email.',
+        empty_text: 'Enter a shipment number above to see tracking details.',
+        wa_label: 'Contact Us',
+        wa_chat: 'Chat on WhatsApp',
+      },
+      ar: {
+        nav_badge: 'تتبع الشحنة',
+        eyebrow: 'التتبع الفوري',
+        headline: 'أين<br><span class="blue">شحنتك؟</span>',
+        hero_sub: 'أدخل رقم شحنتك أدناه للحصول على حالة التوصيل الفورية ومعلومات السائق وإثبات التسليم.',
+        search_placeholder: 'أدخل رقم الشحنة (مثال: ORD-00123)',
+        search_btn: 'تتبع الشحنة',
+        search_hint: 'رقم شحنتك مطبوع في بريد تأكيد التوصيل.',
+        empty_text: 'أدخل رقم شحنة أعلاه لعرض تفاصيل التتبع.',
+        wa_label: 'تواصل معنا',
+        wa_chat: 'تواصل عبر واتساب',
+      }
+    };
+
+    function applyTrackTranslations(lang) {
+      const t = trackTranslations[lang];
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        if (t[key] !== undefined) el.textContent = t[key];
+      });
+      document.querySelectorAll('[data-i18n-html]').forEach(el => {
+        const key = el.dataset.i18nHtml;
+        if (t[key] !== undefined) el.innerHTML = t[key];
+      });
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.dataset.i18nPlaceholder;
+        if (t[key] !== undefined) el.placeholder = t[key];
+      });
+      document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+      document.documentElement.setAttribute('lang', lang);
+      document.getElementById('langBtn').textContent = lang === 'ar' ? 'English' : 'عربي';
+    }
+
+    function toggleLanguage() {
+      const current = localStorage.getItem('lang') || 'en';
+      const next = current === 'en' ? 'ar' : 'en';
+      localStorage.setItem('lang', next);
+      applyTrackTranslations(next);
+    }
+
+    (function () {
+      const saved = localStorage.getItem('lang') || 'en';
+      if (saved === 'ar') applyTrackTranslations('ar');
+    })();
+  </script>
+
+</body>
+</html>

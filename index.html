@@ -1,0 +1,2771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ThunderSnow — The Last Mile, Perfected</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&f[]=cabinet-grotesk@800,700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:             #FFFFFF;
+      --section-bg:     #F7F9FC;
+      --surface:        #F7F9FC;
+      --surface-high:   #FFFFFF;
+      --border:         #E5E7EB;
+      --brand:          #1E88D8;
+      --brand-hover:    #41A5DD;
+      --accent:         #F4B400;
+      --accent-glow:    rgba(244, 180, 0, 0.10);
+      --text-1:         #1A1A1A;
+      --text-2:         #4B5563;
+      --text-3:         #6B7280;
+      --font-display:   'Cabinet Grotesk', sans-serif;
+      --font-body:      'Satoshi', sans-serif;
+      --ease-spring:    cubic-bezier(0.34, 1.56, 0.64, 1);
+      --ease-out:       cubic-bezier(0.16, 1, 0.3, 1);
+      --radius-sm:      10px;
+      --radius-md:      16px;
+      --radius-lg:      24px;
+      --radius-xl:      36px;
+      /* Card shadows for light theme */
+      --shadow-sm:      0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
+      --shadow-md:      0 2px 8px rgba(0,0,0,0.07), 0 8px 24px rgba(0,0,0,0.05);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text-1);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Light-mode subtle texture — very low opacity */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      opacity: 0.008;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ===========================================
+       NAVIGATION — Floating Island
+    =========================================== */
+    .nav-wrapper {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 200;
+      display: flex;
+      justify-content: center;
+      padding: 20px 24px;
+      transition: padding 0.4s var(--ease-out);
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 8px 8px 8px 12px;
+      max-width: 820px;
+      width: 100%;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .nav-logo {
+      text-decoration: none;
+      flex-shrink: 0;
+      margin-right: auto;
+      display: flex;
+      align-items: center;
+    }
+
+    .logo-img {
+      display: block;
+      width: auto;
+      transition: opacity 0.2s;
+    }
+
+    .nav-logo:hover .logo-img { opacity: 0.85; }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+      margin-inline-end: 16px;
+    }
+
+    /* Divider between CTA and lang button */
+    .lang-btn {
+      margin-inline-start: 2px;
+      position: relative;
+    }
+    .lang-btn::before {
+      content: '';
+      position: absolute;
+      inset-inline-start: -6px;
+      top: 20%;
+      height: 60%;
+      width: 1px;
+      background: var(--border);
+    }
+
+    .nav-links a {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-2);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .nav-links a:hover { color: var(--text-1); }
+
+    .nav-cta {
+      background: var(--brand);
+      color: #FFFFFF;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 10px 22px;
+      border-radius: 100px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      flex-shrink: 0;
+      transition: background 0.2s ease, transform 0.25s var(--ease-spring);
+    }
+
+    .nav-cta:hover {
+      background: var(--brand-hover);
+      transform: scale(1.04);
+    }
+
+    /* ===========================================
+       HERO — Full-bleed video, centered
+    =========================================== */
+    .hero-section {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+      opacity: 0.45;
+    }
+
+    /* Inward masking gradient — edges dissolve into site bg */
+    .hero-vignette {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background:
+        linear-gradient(to bottom, #FFFFFF 0%, transparent 22%, transparent 68%, #FFFFFF 100%),
+        linear-gradient(to right,  #FFFFFF 0%, transparent 18%, transparent 82%, #FFFFFF 100%);
+    }
+
+    .hero {
+      position: relative;
+      z-index: 2;
+      min-height: 100dvh;
+      padding: 140px 60px 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+
+    .hero-left {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 32px;
+      flex: 1;
+      justify-content: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--brand);
+      padding: 7px 14px;
+      background: rgba(30, 136, 216, 0.08);
+      border: 1px solid rgba(30, 136, 216, 0.18);
+      border-radius: 100px;
+      width: fit-content;
+    }
+
+    .eyebrow-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--brand);
+      border-radius: 50%;
+      animation: dot-pulse 2s ease infinite;
+    }
+
+    @keyframes dot-pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.45; transform: scale(0.75); }
+    }
+
+    .hero-headline {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(52px, 6.5vw, 88px);
+      line-height: 0.93;
+      letter-spacing: -0.045em;
+      color: var(--text-1);
+    }
+
+    .hero-headline .accent-word { color: var(--brand); }
+
+    .hero-sub {
+      font-size: 18px;
+      font-weight: 400;
+      color: var(--text-2);
+      line-height: 1.7;
+      max-width: 580px;
+      text-align: center;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      background: var(--brand);
+      color: #FFFFFF;
+      font-family: var(--font-body);
+      font-size: 15px;
+      font-weight: 700;
+      padding: 14px 28px;
+      border-radius: 100px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.28s var(--ease-spring);
+    }
+
+    .btn-primary:hover {
+      background: var(--brand-hover);
+      transform: translateY(-2px) scale(1.025);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      background: transparent;
+      color: var(--text-2);
+      font-family: var(--font-body);
+      font-size: 15px;
+      font-weight: 500;
+      padding: 13px 24px;
+      border-radius: 100px;
+      text-decoration: none;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s, transform 0.28s var(--ease-spring);
+    }
+
+    .btn-secondary:hover {
+      color: var(--text-1);
+      border-color: rgba(255, 255, 255, 0.16);
+      transform: translateY(-2px);
+    }
+
+    .btn-accent {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      background: var(--accent);
+      color: #1A1A1A;
+      font-family: var(--font-body);
+      font-size: 15px;
+      font-weight: 700;
+      padding: 14px 28px;
+      border-radius: 100px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.28s var(--ease-spring);
+    }
+    .btn-accent:hover {
+      background: #e6a800;
+      transform: translateY(-2px) scale(1.025);
+    }
+
+    /* ---- Hero Right: Metric cards (Double-Bezel) ---- */
+    .hero-right {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: stretch;
+      gap: 14px;
+      padding-top: 16px;
+    }
+
+    /* Double-Bezel outer shell */
+    .card-shell {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 4px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.45s var(--ease-out), box-shadow 0.3s ease;
+    }
+
+    .card-shell:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-md);
+    }
+
+    /* Double-Bezel inner core */
+    .card-core {
+      background: var(--surface-high);
+      border: 1px solid rgba(0, 0, 0, 0.04);
+      border-radius: calc(var(--radius-xl) - 4px);
+      padding: 28px 32px;
+    }
+
+    .metric-big {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 60px;
+      letter-spacing: -0.045em;
+      line-height: 1;
+      color: var(--text-1);
+    }
+
+    .metric-big .accent { color: var(--accent); }
+
+    .metric-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-2);
+      margin-top: 8px;
+    }
+
+    .metric-sub {
+      font-size: 12px;
+      color: var(--text-3);
+      margin-top: 4px;
+    }
+
+    .cards-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .card-shell-sm {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 4px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.45s var(--ease-out), box-shadow 0.3s ease;
+    }
+
+    .card-shell-sm:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+
+    .card-core-sm {
+      background: var(--surface-high);
+      border: 1px solid rgba(0, 0, 0, 0.04);
+      border-radius: calc(var(--radius-lg) - 4px);
+      padding: 20px 24px;
+    }
+
+    .metric-med {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 38px;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      color: var(--text-1);
+    }
+
+    .metric-med .accent { color: var(--accent); }
+
+    /* ---- Live badge ---- */
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: #4ADE80;
+      padding: 4px 11px;
+      background: rgba(74, 222, 128, 0.08);
+      border: 1px solid rgba(74, 222, 128, 0.14);
+      border-radius: 100px;
+      width: fit-content;
+    }
+
+    .live-badge::before {
+      content: '';
+      width: 5px;
+      height: 5px;
+      background: #4ADE80;
+      border-radius: 50%;
+      animation: dot-pulse 1.6s ease infinite;
+    }
+
+    /* ---- Progress bars ---- */
+    .progress-group { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; }
+
+    .progress-row {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-2);
+    }
+
+    .progress-track {
+      height: 3px;
+      background: rgba(0, 0, 0, 0.10);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--brand);
+      border-radius: 2px;
+      transition: width 1.6s var(--ease-out);
+    }
+
+    /* ---- Hero stats bar ---- */
+    .hero-stats-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+      padding-top: 56px;
+      border-top: 1px solid rgba(0, 0, 0, 0.10);
+      margin-top: 60px;
+      width: 100%;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .stat-val {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 22px;
+      letter-spacing: -0.03em;
+      color: var(--text-1);
+    }
+
+    .stat-sar {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      direction: ltr;
+    }
+    .sar-symbol {
+      height: 22px;
+      width: auto;
+      display: inline-block;
+      filter: brightness(0);
+    }
+
+    .stat-desc {
+      font-size: 13px;
+      color: var(--text-2);
+    }
+
+    .stat-divider {
+      width: 1px;
+      height: 36px;
+      background: var(--border);
+      flex-shrink: 0;
+    }
+
+    /* ===========================================
+       SCROLL VIDEO STORY
+    =========================================== */
+    .scroll-story {
+      height: 600vh;
+      position: relative;
+    }
+
+    .scroll-story-sticky {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    .scroll-story-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+      will-change: transform;
+    }
+
+    .scroll-story-video.ready {
+      opacity: 1;
+    }
+
+    /* Same inward-masking vignette treatment as hero */
+    .scroll-story-vignette {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background:
+        linear-gradient(to bottom, #FFFFFF 0%, transparent 18%, transparent 72%, #FFFFFF 100%),
+        linear-gradient(to right,  #FFFFFF 0%, transparent 16%, transparent 84%, #FFFFFF 100%);
+    }
+
+    /* Text panels */
+    .scroll-panel {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      padding: 0 8%;
+      pointer-events: none;
+      /* default: left-aligned */
+      justify-content: flex-start;
+    }
+
+    .scroll-panel.panel-right  { justify-content: flex-end; }
+    .scroll-panel.panel-center { justify-content: center; }
+
+    .panel-content {
+      max-width: 420px;
+      background: rgba(12, 12, 14, 0.72);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: var(--radius-xl);
+      padding: 40px 44px;
+      /* Hidden state */
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.55s var(--ease-out), transform 0.55s var(--ease-out);
+    }
+
+    .scroll-panel.active .panel-content {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .panel-eyebrow {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #41A5DD;
+      margin-bottom: 14px;
+    }
+
+    .panel-headline {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(28px, 3vw, 40px);
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+      color: #FFFFFF;
+      margin-bottom: 14px;
+    }
+
+    .panel-body {
+      font-size: 15px;
+      color: rgba(255, 255, 255, 0.78);
+      line-height: 1.72;
+    }
+
+    .panel-items {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .panel-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.72);
+    }
+
+    .panel-item::before {
+      content: '';
+      width: 4px;
+      height: 4px;
+      background: #41A5DD;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* Thin progress bar at bottom of sticky viewport */
+    .scroll-story-progress {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 2px;
+      width: 0%;
+      background: var(--brand);
+      z-index: 10;
+      transition: width 0.08s linear;
+    }
+
+    /* ===========================================
+       TICKER / MARQUEE
+    =========================================== */
+    .ticker-wrap {
+      overflow: hidden;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      padding: 16px 0;
+    }
+
+    .ticker-track {
+      display: flex;
+      gap: 72px;
+      width: max-content;
+      animation: ticker 32s linear infinite;
+    }
+
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    .ticker-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      white-space: nowrap;
+    }
+
+    .ticker-pip {
+      width: 4px;
+      height: 4px;
+      background: var(--accent);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ===========================================
+       SHARED SECTION LAYOUT
+    =========================================== */
+    .section-wrap {
+      padding: 120px 60px;
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+
+    .section-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--brand);
+      margin-bottom: 20px;
+    }
+
+    .section-headline {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(36px, 4vw, 58px);
+      letter-spacing: -0.04em;
+      line-height: 1.03;
+      color: var(--text-1);
+      max-width: 660px;
+    }
+
+    .section-sub {
+      font-size: 17px;
+      color: var(--text-2);
+      line-height: 1.72;
+      max-width: 520px;
+      margin-top: 18px;
+    }
+
+    /* ===========================================
+       BENTO FEATURES GRID
+    =========================================== */
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 14px;
+      margin-top: 48px;
+    }
+
+    /* Double-Bezel bento cards */
+    .b-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 4px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.45s var(--ease-out), box-shadow 0.3s;
+    }
+
+    .b-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .b-core {
+      background: var(--surface-high);
+      border: 1px solid rgba(0, 0, 0, 0.04);
+      border-radius: calc(var(--radius-lg) - 4px);
+      padding: 32px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .span-5  { grid-column: span 5; }
+    .span-7  { grid-column: span 7; }
+    .span-4  { grid-column: span 4; }
+    .span-8  { grid-column: span 8; }
+    .span-12 { grid-column: span 12; }
+
+    .b-icon {
+      width: 44px;
+      height: 44px;
+      background: rgba(30, 136, 216, 0.08);
+      border: 1px solid rgba(30, 136, 216, 0.14);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .b-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 21px;
+      letter-spacing: -0.03em;
+      color: var(--text-1);
+    }
+
+    .b-desc {
+      font-size: 15px;
+      color: var(--text-2);
+      line-height: 1.68;
+      flex: 1;
+    }
+
+    /* Code snippet visual */
+    .code-snippet {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px 20px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      line-height: 1.9;
+      color: var(--text-3);
+      margin-top: auto;
+      overflow: hidden;
+    }
+
+    .code-snippet .c-accent { color: var(--accent); }
+    .code-snippet .c-green  { color: #4ADE80; }
+    .code-snippet .c-purple { color: #B08EE0; }
+    .code-snippet .c-blue   { color: #60A5FA; }
+    .code-snippet .c-str    { color: #7DD3A8; }
+
+    /* ===========================================
+       PLATFORM SPLIT SECTION
+    =========================================== */
+    .platform-wrap {
+      padding: 0 60px 120px;
+      max-width: 1320px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .platform-features {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      margin-top: 44px;
+    }
+
+    .p-feat {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .p-feat-icon {
+      width: 38px;
+      height: 38px;
+      background: rgba(30, 136, 216, 0.08);
+      border: 1px solid rgba(30, 136, 216, 0.14);
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .p-feat-text strong {
+      display: block;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-1);
+      margin-bottom: 4px;
+    }
+
+    .p-feat-text span {
+      font-size: 14px;
+      color: var(--text-2);
+      line-height: 1.65;
+    }
+
+    /* Terminal card (Double-Bezel) */
+    .terminal-shell {
+      background: #111115;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: var(--radius-xl);
+      padding: 4px;
+      box-shadow: var(--shadow-md);
+    }
+
+    .terminal-core {
+      background: #18181F;
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      border-radius: calc(var(--radius-xl) - 4px);
+      padding: 32px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .terminal-core::before {
+      content: '';
+      position: absolute;
+      top: -50px;
+      right: -50px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(ellipse, rgba(30, 136, 216, 0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .term-header {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 24px;
+    }
+
+    .term-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+    }
+
+    .term-dot.r { background: #FF5F57; }
+    .term-dot.y { background: #FEBC2E; }
+    .term-dot.g { background: #28C840; }
+
+    .term-filename {
+      font-size: 12px;
+      color: var(--text-3);
+      font-family: 'Courier New', monospace;
+      margin-left: 10px;
+    }
+
+    .term-code {
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.85;
+      color: var(--text-2);
+    }
+
+    .term-code .c-comment { color: var(--text-3); }
+    .term-code .c-kw      { color: #B08EE0; }
+    .term-code .c-str     { color: #7DD3A8; }
+    .term-code .c-num     { color: var(--accent); }
+    .term-code .c-fn      { color: #60A5FA; }
+    .term-code .c-green   { color: #4ADE80; }
+
+    /* ===========================================
+       NETWORK / COVERAGE BAND
+    =========================================== */
+    .coverage-wrap {
+      background: var(--section-bg);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 80px 60px;
+    }
+
+    .coverage-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .coverage-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .cov-stat-shell {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 4px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.45s var(--ease-out), box-shadow 0.3s;
+    }
+
+    .cov-stat-shell:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+
+    .cov-stat-core {
+      background: #FFFFFF;
+      border: 1px solid rgba(0, 0, 0, 0.04);
+      border-radius: calc(var(--radius-lg) - 4px);
+      padding: 22px 24px;
+    }
+
+    .cov-num {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 36px;
+      letter-spacing: -0.04em;
+      color: var(--text-1);
+    }
+
+    .cov-num span { color: var(--brand); }
+    .cov-label { font-size: 13px; color: var(--text-2); margin-top: 6px; }
+
+    /* City grid */
+    .city-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .city-chip {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-2);
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      transition: color 0.2s, border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .city-chip:hover {
+      color: var(--text-1);
+      border-color: var(--brand);
+      box-shadow: 0 0 0 3px rgba(30,136,216,0.08);
+    }
+
+    .city-dot {
+      width: 5px;
+      height: 5px;
+      background: var(--accent);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ===========================================
+       TESTIMONIALS
+    =========================================== */
+    .testimonials-wrap {
+      padding: 120px 0;
+      overflow: hidden;
+    }
+
+    .testimonials-header {
+      padding: 0 60px;
+      margin-bottom: 52px;
+    }
+
+    .t-scroll {
+      display: flex;
+      gap: 16px;
+      padding: 0 60px 16px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      cursor: grab;
+    }
+
+    .t-scroll::-webkit-scrollbar { display: none; }
+    .t-scroll:active { cursor: grabbing; }
+
+    .t-card-shell {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 4px;
+      min-width: 380px;
+      max-width: 380px;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.45s var(--ease-out), box-shadow 0.3s;
+    }
+
+    .t-card-shell:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
+
+    .t-card-core {
+      background: var(--surface-high);
+      border: 1px solid rgba(0, 0, 0, 0.04);
+      border-radius: calc(var(--radius-lg) - 4px);
+      padding: 28px 30px;
+    }
+
+    .t-stars {
+      display: flex;
+      gap: 3px;
+      margin-bottom: 18px;
+    }
+
+    .t-star { color: var(--accent); font-size: 14px; } /* gold stars — intentional accent use */
+
+    .t-quote {
+      font-size: 16px;
+      color: var(--text-1);
+      line-height: 1.68;
+      margin-bottom: 26px;
+    }
+
+    .t-author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .t-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(30,136,216,0.10), rgba(30,136,216,0.04));
+      border: 1px solid rgba(30,136,216,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--brand);
+      flex-shrink: 0;
+    }
+
+    .t-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-1);
+    }
+
+    .t-role {
+      font-size: 12px;
+      color: var(--text-2);
+      margin-top: 2px;
+    }
+
+    /* ===========================================
+       CTA SECTION
+    =========================================== */
+    .cta-section {
+      padding: 160px 60px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 900px;
+      height: 600px;
+      background: radial-gradient(ellipse, rgba(30, 136, 216, 0.06) 0%, transparent 62%);
+      pointer-events: none;
+    }
+
+    .cta-headline {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(48px, 6vw, 84px);
+      letter-spacing: -0.045em;
+      line-height: 0.97;
+      color: var(--text-1);
+      max-width: 820px;
+      margin: 0 auto 24px;
+    }
+
+    .cta-sub {
+      font-size: 18px;
+      color: var(--text-2);
+      max-width: 460px;
+      margin: 0 auto 52px;
+      line-height: 1.68;
+    }
+
+    .cta-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .cta-note {
+      font-size: 13px;
+      color: var(--text-3);
+      margin-top: 20px;
+    }
+
+    /* ===========================================
+       PRICING SECTION
+    =========================================== */
+    .pricing-section {
+      padding: 120px 60px;
+      text-align: center;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+    }
+
+    .pricing-inner {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .pricing-headline {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(38px, 5vw, 58px);
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+      color: var(--text-1);
+      margin-bottom: 20px;
+    }
+
+    .pricing-sub {
+      font-size: 17px;
+      color: var(--text-2);
+      line-height: 1.7;
+      margin-bottom: 48px;
+    }
+
+    .pricing-features {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 52px;
+    }
+
+    .pricing-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-2);
+      background: var(--section-bg);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 8px 16px;
+    }
+
+    .pricing-tag-dot {
+      width: 6px; height: 6px;
+      background: var(--brand);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .pricing-cta-group {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 540px) {
+      .pricing-section { padding: 80px 24px; }
+    }
+
+    /* ===========================================
+       CONTACT SECTION
+    =========================================== */
+    .contact-section {
+      background: var(--section-bg);
+      border-top: 1px solid var(--border);
+      padding: 100px 60px;
+    }
+
+    .contact-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    .contact-left .section-eyebrow { margin-bottom: 20px; }
+
+    .contact-headline {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(36px, 4vw, 52px);
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+      color: var(--text-1);
+      margin-bottom: 20px;
+    }
+
+    .contact-sub {
+      font-size: 16px;
+      color: var(--text-2);
+      line-height: 1.7;
+      max-width: 420px;
+    }
+
+    .contact-details {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 40px;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 18px 22px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      text-decoration: none;
+      transition: box-shadow 0.2s, transform 0.2s var(--ease-out);
+    }
+
+    .contact-item:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .contact-item-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .contact-item-icon.blue     { background: rgba(30,136,216,0.10); color: var(--brand); }
+    .contact-item-icon.gold     { background: rgba(244,180,0,0.12); }
+    .contact-item-icon.green    { background: rgba(22,163,74,0.10); }
+    .contact-item-icon.whatsapp { background: rgba(37,211,102,0.12); color: #25D366; }
+
+    .contact-item-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 3px;
+    }
+
+    .contact-item-value {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-1);
+    }
+
+    /* Right: map card + hours */
+    .contact-right {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .contact-map {
+      width: 100%;
+      height: 280px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .contact-map iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    .hours-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 24px 28px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .hours-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 16px;
+    }
+
+    .hours-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+
+    .hours-row:last-child { border-bottom: none; }
+    .hours-day  { color: var(--text-2); font-weight: 500; }
+    .hours-time { color: var(--text-1); font-weight: 600; }
+    .hours-closed { color: var(--text-3); font-style: italic; }
+
+    @media (max-width: 768px) {
+      .contact-section { padding: 60px 24px; }
+      .contact-inner   { grid-template-columns: 1fr; gap: 48px; }
+    }
+
+    /* ===========================================
+       FOOTER
+    =========================================== */
+    .footer-wrap {
+      border-top: 1px solid var(--border);
+      padding: 64px 60px 40px;
+      max-width: 1320px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.6fr 1fr 1fr 1fr;
+      gap: 40px;
+    }
+
+    .footer-brand-block {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .footer-logo {
+      display: flex;
+      align-items: flex-start;
+    }
+
+
+    .footer-tagline {
+      font-size: 14px;
+      color: var(--text-2);
+      line-height: 1.65;
+      max-width: 240px;
+    }
+
+    .footer-badge-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .footer-badge {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      color: var(--text-2);
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--section-bg);
+    }
+
+    .footer-col-head {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 20px;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-direction: column;
+      gap: 13px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      font-size: 14px;
+      color: var(--text-2);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--text-1); }
+
+    .footer-bottom {
+      border-top: 1px solid var(--border);
+      padding: 24px 60px;
+      max-width: 1320px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-copy {
+      font-size: 13px;
+      color: var(--text-3);
+    }
+
+    /* ===========================================
+       SCROLL REVEAL
+    =========================================== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.85s var(--ease-out), transform 0.85s var(--ease-out);
+    }
+
+    .reveal.in-view {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .d1 { transition-delay: 0.10s; }
+    .d2 { transition-delay: 0.20s; }
+    .d3 { transition-delay: 0.30s; }
+    .d4 { transition-delay: 0.40s; }
+
+    /* ===========================================
+       RESPONSIVE
+    =========================================== */
+    @media (max-width: 960px) {
+      .hero {
+        padding: 120px 24px 60px;
+      }
+
+      .hero-stats-bar {
+        gap: 20px;
+      }
+
+      nav { padding: 10px 10px 10px 20px; }
+      .nav-links { display: none; }
+      .nav-cta { display: none; }
+
+      .section-wrap { padding: 80px 24px; }
+
+      .bento-grid { grid-template-columns: 1fr; }
+      .span-5, .span-7, .span-4, .span-8, .span-12 { grid-column: span 1; }
+
+      .platform-wrap {
+        grid-template-columns: 1fr;
+        padding: 0 24px 80px;
+        gap: 40px;
+      }
+
+      .coverage-wrap { padding: 60px 24px; }
+      .coverage-inner { grid-template-columns: 1fr; gap: 40px; }
+      .city-grid { grid-template-columns: repeat(2, 1fr); }
+
+      .testimonials-header { padding: 0 24px; }
+      .t-scroll { padding: 0 24px 16px; }
+
+      .cta-section { padding: 100px 24px; }
+
+      .footer-wrap {
+        grid-template-columns: 1fr 1fr;
+        padding: 48px 24px 32px;
+      }
+
+      .footer-bottom {
+        padding: 20px 24px;
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 600px) {
+      /* ── Nav ── */
+      nav { padding: 6px 8px 6px 14px; }
+      .nav-cta { display: none; }
+      .hero-video { opacity: 0.35; object-fit: contain; background: #fff; }
+      .scroll-story { height: 300vh; }
+      .scroll-story-video { object-fit: cover; }
+      .scroll-panel {
+        align-items: flex-end;
+        justify-content: center !important;
+        padding: 0 16px 32px;
+      }
+      .panel-content {
+        max-width: 100%;
+        width: 100%;
+        padding: 20px 22px;
+        background: rgba(8, 8, 10, 0.55);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: var(--radius-md);
+      }
+      .panel-headline { font-size: clamp(18px, 5vw, 26px) !important; margin-bottom: 8px; }
+      .panel-body { font-size: 13px !important; margin-bottom: 10px; }
+      .panel-list { font-size: 12px !important; }
+      .hero-headline { color: #1A1A1A; }
+      .hero-sub { color: #333; }
+
+      /* ── Hero ── */
+      .hero { padding: 100px 20px 60px; }
+      .hero-headline { font-size: clamp(36px, 10vw, 52px); line-height: 0.95; }
+      .hero-sub { font-size: 15px; }
+      .hero-actions { flex-direction: column; width: 100%; max-width: 340px; }
+      .btn-primary, .btn-secondary, .btn-accent { width: 100%; justify-content: center; }
+      .hero-stats-bar {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px 0;
+        padding-top: 28px;
+        margin-top: 28px;
+      }
+      .stat-divider { display: none; }
+      .stat-item {
+        width: 33.333%;
+        align-items: center;
+        text-align: center;
+      }
+      .stat-last {
+        width: 50%;
+      }
+      .stat-item.reveal.d3 {
+        width: 50%;
+      }
+      .stat-val { font-size: 20px; text-align: center; }
+      .stat-sar { justify-content: center; }
+      .stat-desc { font-size: 12px; text-align: center; }
+      .hero-right { display: none; }
+
+      /* ── Scroll story panels ── */
+      .scroll-panel {
+        padding: 0 16px;
+        align-items: flex-end;
+        padding-bottom: 80px;
+        justify-content: center !important;
+      }
+      .panel-content { max-width: 100%; width: 100%; }
+
+      /* ── Sections ── */
+      .section-wrap { padding: 60px 20px; }
+      .section-headline { font-size: clamp(28px, 8vw, 40px); }
+
+      /* ── Platform / services ── */
+      .platform-wrap { padding: 0 20px 60px; }
+
+      /* ── City grid ── */
+      .city-grid { grid-template-columns: repeat(2, 1fr); }
+
+      /* ── Testimonials ── */
+      .t-card { min-width: 280px; }
+
+      /* ── Pricing ── */
+      .pricing-section { padding: 60px 20px; }
+
+      /* ── CTA ── */
+      .cta-section { padding: 80px 20px; }
+      .cta-actions { flex-direction: column; align-items: center; }
+      .cta-actions .btn-primary,
+      .cta-actions .btn-secondary { width: 100%; max-width: 320px; justify-content: center; }
+
+      /* ── Contact ── */
+      .contact-section { padding: 60px 20px; }
+
+      /* ── Footer ── */
+      .footer-wrap { grid-template-columns: 1fr; padding: 40px 20px 24px; gap: 28px; }
+      .footer-bottom { padding: 16px 20px; }
+    }
+
+    /* ── Hamburger button ── */
+    .nav-hamburger {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px; height: 38px;
+      background: var(--section-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    @media (min-width: 961px) {
+      .nav-hamburger { display: none; }
+    }
+
+    .nav-hamburger span {
+      display: block;
+      width: 18px; height: 2px;
+      background: var(--text-1);
+      border-radius: 2px;
+      position: relative;
+      transition: background 0.2s;
+    }
+
+    .nav-hamburger span::before,
+    .nav-hamburger span::after {
+      content: '';
+      position: absolute;
+      left: 0; width: 18px; height: 2px;
+      background: var(--text-1);
+      border-radius: 2px;
+      transition: transform 0.25s ease;
+    }
+
+    .nav-hamburger span::before { top: -5px; }
+    .nav-hamburger span::after  { top:  5px; }
+
+    .nav-hamburger.open span        { background: transparent; }
+    .nav-hamburger.open span::before { transform: translateY(5px) rotate(45deg); }
+    .nav-hamburger.open span::after  { transform: translateY(-5px) rotate(-45deg); }
+
+    /* ── Mobile menu overlay ── */
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 80px; left: 16px; right: 16px;
+      background: rgba(255,255,255,0.97);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      z-index: 199;
+      padding: 16px;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .mobile-menu.open { display: flex; }
+
+    .mobile-menu a {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-1);
+      text-decoration: none;
+      padding: 14px 16px;
+      border-radius: var(--radius-sm);
+      transition: background 0.15s;
+    }
+
+    .mobile-menu a:hover { background: var(--section-bg); }
+
+    .mobile-menu .mobile-cta {
+      margin-top: 8px;
+      background: var(--brand);
+      color: #fff;
+      text-align: center;
+      border-radius: 100px;
+      padding: 14px 16px;
+    }
+
+    .mobile-menu .mobile-cta:hover { background: var(--brand-hover); }
+
+    /* ── Language toggle button ─────────────────────────────────────── */
+    .lang-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: var(--section-bg);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-2);
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+    .lang-btn:hover { background: var(--border); color: var(--text-1); }
+
+    /* ── RTL overrides (Arabic) ──────────────────────────────────────── */
+    [dir="rtl"] body { font-family: 'Tajawal', sans-serif; }
+
+    /* Nav: reduce link gap so Arabic text fits */
+    [dir="rtl"] nav { direction: rtl; }
+    [dir="rtl"] .nav-links { direction: rtl; gap: 22px; }
+    [dir="rtl"] .nav-links a { font-size: 13px; }
+    [dir="rtl"] .nav-logo { margin-right: 0; margin-left: auto; }
+
+    [dir="rtl"] .hero-left { direction: rtl; text-align: right; }
+    [dir="rtl"] .hero-actions { flex-direction: row-reverse; justify-content: flex-start; }
+    [dir="rtl"] .hero-stats-bar { direction: rtl; }
+    [dir="rtl"] .section-eyebrow,
+    [dir="rtl"] .section-headline,
+    [dir="rtl"] .section-sub { direction: rtl; text-align: right; }
+    [dir="rtl"] .bento-grid { direction: rtl; }
+    [dir="rtl"] .b-core { text-align: right; direction: rtl; }
+    [dir="rtl"] .coverage-inner { direction: rtl; text-align: right; }
+    [dir="rtl"] .coverage-stats { direction: rtl; }
+    [dir="rtl"] .city-grid { direction: rtl; }
+    [dir="rtl"] .testimonials-header { direction: rtl; text-align: right; }
+    [dir="rtl"] .t-card-core { text-align: right; direction: rtl; }
+    [dir="rtl"] .t-author { flex-direction: row-reverse; }
+    [dir="rtl"] .cta-section { direction: rtl; }
+    [dir="rtl"] .cta-headline,
+    [dir="rtl"] .cta-sub,
+    [dir="rtl"] .cta-note { direction: rtl; text-align: center; }
+    [dir="rtl"] .pricing-inner { direction: rtl; text-align: right; }
+    [dir="rtl"] .pricing-features { justify-content: flex-end; }
+    [dir="rtl"] .pricing-cta-group { flex-direction: row-reverse; justify-content: flex-start; }
+    [dir="rtl"] .contact-inner { direction: rtl; }
+    [dir="rtl"] .contact-left { text-align: right; }
+    [dir="rtl"] .contact-item { flex-direction: row-reverse; text-align: right; }
+    [dir="rtl"] .hours-card { direction: rtl; text-align: right; }
+    [dir="rtl"] .footer-wrap { direction: rtl; text-align: right; }
+    [dir="rtl"] .footer-links { direction: rtl; }
+    [dir="rtl"] .footer-bottom { direction: rtl; }
+
+    /* Scroll panels: justify-content handles left/right in RTL automatically */
+    [dir="rtl"] .panel-content { text-align: right; direction: rtl; }
+    [dir="rtl"] .panel-items { direction: rtl; }
+
+    [dir="rtl"] .mobile-menu { direction: rtl; }
+
+    /* Phone numbers always LTR */
+    [dir="rtl"] .phone-ltr { direction: ltr; unicode-bidi: embed; display: inline-block; }
+  </style>
+</head>
+<body>
+
+  <!-- =============================================
+       NAVIGATION
+  ============================================= -->
+  <div class="nav-wrapper" id="navWrapper">
+    <nav>
+      <a href="#" class="nav-logo">
+        <img src="logo.svg" alt="ThunderSnow" class="logo-img" height="32">
+      </a>
+      <ul class="nav-links">
+        <li><a href="#services" data-i18n="nav_services">Services</a></li>
+        <li><a href="#network" data-i18n="nav_network">Network</a></li>
+        <li><a href="#pricing" data-i18n="nav_pricing">Pricing</a></li>
+        <li><a href="tracking.html" data-i18n="nav_track">Track</a></li>
+        <li><a href="#contact-us" data-i18n="nav_contact">Contact</a></li>
+      </ul>
+      <a href="#contact-us" class="nav-cta" data-i18n="nav_cta">Get Started</a>
+      <button class="lang-btn" id="langBtn" onclick="toggleLanguage()">عربي</button>
+      <button class="nav-hamburger" id="hamburgerBtn" aria-label="Menu">
+        <span></span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- Mobile menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#services"  onclick="closeMobileMenu()" data-i18n="nav_services">Services</a>
+    <a href="#network"   onclick="closeMobileMenu()" data-i18n="nav_network">Network</a>
+    <a href="#pricing"   onclick="closeMobileMenu()" data-i18n="nav_pricing">Pricing</a>
+    <a href="tracking.html" data-i18n="nav_track_full">Track Shipment</a>
+    <a href="#contact-us" onclick="closeMobileMenu()" data-i18n="nav_contact">Contact</a>
+    <a href="#contact-us" class="mobile-cta" onclick="closeMobileMenu()" data-i18n="nav_cta">Get Started</a>
+  </div>
+
+  <!-- =============================================
+       HERO
+  ============================================= -->
+  <section class="hero-section">
+    <video class="hero-video" autoplay muted loop playsinline>
+      <source src="warehouse.mp4" type="video/mp4">
+    </video>
+    <div class="hero-vignette"></div>
+
+    <div class="hero">
+      <div class="hero-left">
+
+        <h1 class="hero-headline reveal d1" data-i18n-html="hero_headline">
+          The last<br>mile,<br><span class="accent-word">perfected.</span>
+        </h1>
+
+        <p class="hero-sub reveal d2" data-i18n="hero_sub">
+          ThunderSnow delivers enterprise-grade last-mile logistics powered by intelligent routing, real-time visibility, and a courier network built to scale with your demand.
+        </p>
+
+        <div class="hero-actions reveal d3">
+          <a href="#contact" class="btn-primary">
+            <span data-i18n="hero_btn_start">Start Delivering</span>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M1 7h12M8 3l5 4-5 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+          <a href="tracking.html" class="btn-accent" data-i18n="hero_btn_how">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            Track your Shipment
+          </a>
+        </div>
+      </div>
+
+      <!-- Stats bar -->
+      <div class="hero-stats-bar">
+        <div class="stat-item reveal">
+          <div class="stat-val">100K+</div>
+          <div class="stat-desc" data-i18n="stat_deliveries">Shipments / month</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item reveal d1">
+          <div class="stat-val">4.9 / 5</div>
+          <div class="stat-desc" data-i18n="stat_rating">Customer rating</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item reveal d2">
+          <div class="stat-val stat-sar"><img src="sar.png.png" alt="SAR" class="sar-symbol"> 0</div>
+          <div class="stat-desc" data-i18n="stat_setup">Setup fee</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item reveal d3">
+          <div class="stat-val">24 / 7</div>
+          <div class="stat-desc" data-i18n="stat_support">Support coverage</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item reveal d4 stat-last">
+          <div class="stat-val">60+</div>
+          <div class="stat-desc" data-i18n="stat_clients">Enterprise clients</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================
+       SCROLL VIDEO STORY
+  ============================================= -->
+  <section class="scroll-story" id="scrollStory">
+    <div class="scroll-story-sticky">
+
+      <video class="scroll-story-video" id="storyVideo" preload="auto" muted playsinline autoplay loop>
+        <source src="explosion.mp4" type="video/mp4">
+      </video>
+
+      <div class="scroll-story-vignette"></div>
+
+      <!-- Panel 1 — left — 0%–35% of scroll -->
+      <div class="scroll-panel" id="storyPanel1">
+        <div class="panel-content">
+          <span class="panel-eyebrow" data-i18n="p1_eyebrow">Critical Cargo</span>
+          <div class="panel-headline" data-i18n="p1_headline">Some deliveries can't wait a minute.</div>
+          <p class="panel-body" data-i18n="p1_body">When every second counts, we answer. ThunderSnow handles time-critical shipments across medical, pharmaceutical, and emergency supply chains.</p>
+          <div class="panel-items">
+            <div class="panel-item" data-i18n="p1_item1">Insulin &amp; prescription medication</div>
+            <div class="panel-item" data-i18n="p1_item2">Surgical instruments &amp; implants</div>
+            <div class="panel-item" data-i18n="p1_item3">Emergency parts &amp; components</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel 2 — right — 33%–67% of scroll -->
+      <div class="scroll-panel panel-right" id="storyPanel2">
+        <div class="panel-content">
+          <span class="panel-eyebrow" data-i18n="p2_eyebrow">Everyday Essentials</span>
+          <div class="panel-headline" data-i18n="p2_headline">The moments that matter most.</div>
+          <p class="panel-body" data-i18n="p2_body">Birthday flowers. Fresh groceries. A gift that has to arrive before the party starts. We treat every package like it's irreplaceable — because to someone, it is.</p>
+          <div class="panel-items">
+            <div class="panel-item" data-i18n="p2_item1">Same-day grocery &amp; meal kits</div>
+            <div class="panel-item" data-i18n="p2_item2">Gifts, flowers &amp; celebratory orders</div>
+            <div class="panel-item" data-i18n="p2_item3">Electronics &amp; consumer goods</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel 3 — left — 65%–98% of scroll -->
+      <div class="scroll-panel" id="storyPanel3">
+        <div class="panel-content">
+          <span class="panel-eyebrow" data-i18n="p3_eyebrow">Enterprise Scale</span>
+          <div class="panel-headline" data-i18n="p3_headline">Millions of deliveries. Zero excuses.</div>
+          <p class="panel-body" data-i18n="p3_body">Retail replenishment. B2B logistics. High-volume reverse returns. Whatever the load, ThunderSnow's intelligent network scales to meet it without blinking.</p>
+          <div class="panel-items">
+            <div class="panel-item" data-i18n="p3_item1">Retail &amp; e-commerce replenishment</div>
+            <div class="panel-item" data-i18n="p3_item2">Industrial &amp; manufacturing supply</div>
+            <div class="panel-item" data-i18n="p3_item3">Bulk returns &amp; reverse logistics</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="scroll-story-progress" id="storyProgressBar"></div>
+    </div>
+  </section>
+
+  <!-- =============================================
+       TICKER
+  ============================================= -->
+  <div class="ticker-wrap">
+    <div class="ticker-track">
+      <div class="ticker-item"><span class="ticker-pip"></span>Intelligent Route Optimization</div>
+      <div class="ticker-item"><span class="ticker-pip"></span>Real-Time Package Tracking</div>
+      <div class="ticker-item"><span class="ticker-pip"></span>Proof of Delivery</div>
+      <div class="ticker-item"><span class="ticker-pip"></span>Fleet Intelligence Dashboard</div>
+      <div class="ticker-item"><span class="ticker-pip"></span>Same-Day Guarantee</div>
+      <div class="ticker-item"><span class="ticker-pip"></span>Carbon-Neutral Options</div>
+      <div class="ticker-item"><span class="ticker-pip"></span>Enterprise SLA Backed</div>
+      <!-- Duplicate for seamless loop -->
+      <div class="ticker-item"><span class="ticker-pip"></span>Intelligent Route Optimization</div>
+      <div class="ticker-item"><span class="ticker-pip"></span>Real-Time Package Tracking</div>
+      <div class="ticker-item"><span class="ticker-pip"></span>Proof of Delivery</div>
+      <div class="ticker-item"><span class="ticker-pip"></span>Fleet Intelligence Dashboard</div>
+      <div class="ticker-item"><span class="ticker-pip"></span>Same-Day Guarantee</div>
+      <div class="ticker-item"><span class="ticker-pip"></span>Carbon-Neutral Options</div>
+      <div class="ticker-item"><span class="ticker-pip"></span>Enterprise SLA Backed</div>
+    </div>
+  </div>
+
+  <!-- =============================================
+       FEATURES — BENTO GRID
+  ============================================= -->
+  <section id="services" class="section-wrap">
+    <div class="section-eyebrow reveal" data-i18n="svc_eyebrow">Core Capabilities</div>
+    <h2 class="section-headline reveal d1" data-i18n="svc_headline">Everything your last mile demands.</h2>
+    <p class="section-sub reveal d2" data-i18n="svc_sub">From intelligent routing to real-time visibility, ThunderSnow gives you the infrastructure to deliver at any scale, with zero compromise on reliability.</p>
+
+    <div class="bento-grid">
+
+      <!-- Card 1: Routing — span 5 -->
+      <div class="b-card span-5 reveal">
+        <div class="b-core">
+          <div class="b-icon">&#9889;</div>
+          <div class="b-title" data-i18n="svc1_title">Intelligent Routing</div>
+          <div class="b-desc" data-i18n="svc1_desc">AI-optimized delivery routes adapt in real time to traffic, weather, and driver performance. Reduce miles driven by up to 28% from day one.</div>
+          <div class="code-snippet">
+            <div><span class="c-fn">route</span>.optimize({</div>
+            <div>&nbsp;&nbsp;stops:&nbsp;&nbsp;<span class="c-accent">34</span>,</div>
+            <div>&nbsp;&nbsp;window: <span class="c-str">"09:00–17:00"</span>,</div>
+            <div>&nbsp;&nbsp;mode:&nbsp;&nbsp;<span class="c-str">"time"</span></div>
+            <div>}) <span class="c-green">&#10142; 98.2% efficiency</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2: Live Tracking — span 7 -->
+      <div class="b-card span-7 reveal d1">
+        <div class="b-core">
+          <div style="display:flex; align-items:center; justify-content:space-between;">
+            <div class="b-icon">&#128205;</div>
+            <div class="live-badge">Live</div>
+          </div>
+          <div class="b-title" data-i18n="svc2_title">Real-Time Tracking</div>
+          <div class="b-desc" data-i18n="svc2_desc">Sub-minute location updates for every package. Branded tracking pages, SMS notifications, and delivery window predictions — all included.</div>
+          <div class="progress-group" style="margin-top: auto;">
+            <div class="progress-row">
+              <div class="progress-meta">
+                <span>PKG-00192 · Out for delivery</span>
+                <span style="color:#4ADE80;">On Track</span>
+              </div>
+              <div class="progress-track"><div class="progress-fill" data-width="78"></div></div>
+            </div>
+            <div class="progress-row">
+              <div class="progress-meta">
+                <span>PKG-00193 · 3 stops away</span>
+                <span style="color:#4ADE80;">On Track</span>
+              </div>
+              <div class="progress-track"><div class="progress-fill" data-width="62"></div></div>
+            </div>
+            <div class="progress-row">
+              <div class="progress-meta">
+                <span>PKG-00194 · Scheduled 14:00–16:00</span>
+                <span style="color: var(--text-3);">Pending</span>
+              </div>
+              <div class="progress-track"><div class="progress-fill" data-width="0"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3: Proof of Delivery — span 8 -->
+      <div class="b-card span-8 reveal d1">
+        <div class="b-core">
+          <div class="b-icon">&#10003;</div>
+          <div class="b-title" data-i18n="svc3_title">Proof of Delivery</div>
+          <div class="b-desc" data-i18n="svc3_desc">Photo capture, digital signatures, and geofenced confirmation — every handoff documented and instantly accessible from your operations dashboard.</div>
+        </div>
+      </div>
+
+      <!-- Card 5: Fleet Intelligence — span 5 -->
+      <div class="b-card span-5 reveal">
+        <div class="b-core">
+          <div class="b-icon">&#128202;</div>
+          <div class="b-title" data-i18n="svc4_title">Fleet Intelligence</div>
+          <div class="b-desc" data-i18n="svc4_desc">Real-time driver performance scoring, fuel efficiency tracking, and predictive maintenance alerts across your entire fleet.</div>
+          <div class="progress-group">
+            <div class="progress-row">
+              <div class="progress-meta"><span>Fleet utilization</span><span>91%</span></div>
+              <div class="progress-track"><div class="progress-fill" data-width="91"></div></div>
+            </div>
+            <div class="progress-row">
+              <div class="progress-meta"><span>Avg driver score</span><span>94 / 100</span></div>
+              <div class="progress-track"><div class="progress-fill" data-width="94"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 6: Carbon-Neutral — span 7 -->
+      <div class="b-card span-7 reveal d1">
+        <div class="b-core">
+          <div class="b-icon">&#127807;</div>
+          <div class="b-title" data-i18n="svc5_title">Carbon-Neutral Delivery</div>
+          <div class="b-desc" data-i18n="svc5_desc">Offset every delivery automatically. Access our fleet of e-cargo bikes and EVs for urban areas, and receive certified carbon reports for your sustainability disclosures and ESG reporting obligations.</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- =============================================
+       NETWORK / COVERAGE
+  ============================================= -->
+  <div id="network" class="coverage-wrap">
+    <div class="coverage-inner">
+      <div>
+        <div class="section-eyebrow reveal" data-i18n="net_eyebrow">Network Coverage</div>
+        <h2 class="section-headline reveal d1" style="max-width:340px;" data-i18n="net_headline">Eastern Region, Saudi Arabia.</h2>
+        <p class="section-sub reveal d2" style="margin-top:16px;" data-i18n="net_sub">From the industrial corridors of Jubail to the heart of Dammam and Al Khobar — ThunderSnow delivers across the entire Eastern Region.</p>
+        <div class="coverage-stats" style="margin-top:36px;">
+          <div class="cov-stat-shell reveal">
+            <div class="cov-stat-core">
+              <div class="cov-num">16</div>
+              <div class="cov-label" data-i18n="net_cities">Cities covered</div>
+            </div>
+          </div>
+          <div class="cov-stat-shell reveal d2">
+            <div class="cov-stat-core">
+              <div class="cov-num">99<span>%</span></div>
+              <div class="cov-label" data-i18n="net_coverage">Regional coverage</div>
+            </div>
+          </div>
+          <div class="cov-stat-shell reveal d3">
+            <div class="cov-stat-core">
+              <div class="cov-num">4<span>hr</span></div>
+              <div class="cov-label" data-i18n="net_time">Avg delivery time</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="city-grid reveal d1">
+        <div class="city-chip"><span class="city-dot"></span><span data-i18n="city_dammam">Dammam</span></div>
+        <div class="city-chip"><span class="city-dot"></span><span data-i18n="city_khobar">Al Khobar</span></div>
+        <div class="city-chip"><span class="city-dot"></span><span data-i18n="city_dhahran">Dhahran</span></div>
+        <div class="city-chip"><span class="city-dot"></span><span data-i18n="city_jubail">Jubail</span></div>
+        <div class="city-chip"><span class="city-dot"></span><span data-i18n="city_qatif">Qatif</span></div>
+        <div class="city-chip"><span class="city-dot"></span><span data-i18n="city_hofuf">Hofuf (Al-Ahsa)</span></div>
+        <div class="city-chip"><span class="city-dot"></span><span data-i18n="city_mubarraz">Al Mubarraz</span></div>
+        <div class="city-chip"><span class="city-dot"></span><span data-i18n="city_abqaiq">Abqaiq</span></div>
+        <div class="city-chip"><span class="city-dot"></span><span data-i18n="city_rastanura">Ras Tanura</span></div>
+        <div class="city-chip"><span class="city-dot"></span><span data-i18n="city_safwa">Safwa</span></div>
+        <div class="city-chip"><span class="city-dot"></span><span data-i18n="city_saihat">Saihat</span></div>
+        <div class="city-chip"><span class="city-dot"></span><span data-i18n="city_tarut">Tarut</span></div>
+        <div class="city-chip"><span class="city-dot"></span><span data-i18n="city_alqatif">Al Qatif</span></div>
+        <div class="city-chip"><span class="city-dot"></span><span data-i18n="city_nairiyah">Nairiyah</span></div>
+        <div class="city-chip"><span class="city-dot"></span><span data-i18n="city_oyoun">Al Oyoun</span></div>
+        <div class="city-chip"><span class="city-dot"></span><span data-i18n="city_rasalkhair">Ras Al-Khair</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================================
+       TESTIMONIALS
+  ============================================= -->
+  <section class="testimonials-wrap">
+    <div class="testimonials-header">
+      <div class="section-eyebrow reveal" data-i18n="test_eyebrow">What Clients Say</div>
+      <h2 class="section-headline reveal d1" data-i18n="test_headline">Trusted by operators who can't afford downtime.</h2>
+    </div>
+
+    <div class="t-scroll" id="tScroll">
+
+      <div class="t-card-shell">
+        <div class="t-card-core">
+          <div class="t-stars">
+            <span class="t-star">&#9733;</span><span class="t-star">&#9733;</span><span class="t-star">&#9733;</span><span class="t-star">&#9733;</span><span class="t-star">&#9733;</span>
+          </div>
+          <div class="t-quote" data-i18n="quote_fatimah">"From the very first call, the entire process was seamless. Pickup was on time, the delivery was handled with care, and the communication was excellent throughout."</div>
+          <div class="t-author">
+            <div class="t-avatar">F</div>
+            <div>
+              <div class="t-name">Fatimah</div>
+              <div class="t-role">Al Ssayhati</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="t-card-shell">
+        <div class="t-card-core">
+          <div class="t-stars">
+            <span class="t-star">&#9733;</span><span class="t-star">&#9733;</span><span class="t-star">&#9733;</span><span class="t-star">&#9733;</span><span class="t-star">&#9733;</span>
+          </div>
+          <div class="t-quote" data-i18n="quote_ali">"Outstanding service from start to finish. The team was professional, responsive, and genuinely attentive. A level of care that is rare in this industry."</div>
+          <div class="t-author">
+            <div class="t-avatar">A</div>
+            <div>
+              <div class="t-name">Ali</div>
+              <div class="t-role">Almaskeen</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="t-card-shell">
+        <div class="t-card-core">
+          <div class="t-stars">
+            <span class="t-star">&#9733;</span><span class="t-star">&#9733;</span><span class="t-star">&#9733;</span><span class="t-star">&#9733;</span><span class="t-star">&#9733;</span>
+          </div>
+          <div class="t-quote" data-i18n="quote_taher">"Every delivery has been handled with real professionalism and dedication. The quality of service is consistent and reflects a team that truly takes pride in their work."</div>
+          <div class="t-author">
+            <div class="t-avatar">H</div>
+            <div>
+              <div class="t-name">Hajji Taher</div>
+              <div class="t-role">Al Shehab</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="t-card-shell">
+        <div class="t-card-core">
+          <div class="t-stars">
+            <span class="t-star">&#9733;</span><span class="t-star">&#9733;</span><span class="t-star">&#9733;</span><span class="t-star">&#9733;</span><span class="t-star">&#9733;</span>
+          </div>
+          <div class="t-quote" data-i18n="quote_hissah">"Reliable, timely, and professional in every interaction. The delivery driver was courteous and handled the package with great care. Highly recommend ThunderSnow."</div>
+          <div class="t-author">
+            <div class="t-avatar">H</div>
+            <div>
+              <div class="t-name">Hissah</div>
+              <div class="t-role">Otaibi</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- =============================================
+       CTA
+  ============================================= -->
+  <section id="contact" class="cta-section">
+    <div class="section-eyebrow reveal" style="display:flex; justify-content:center;" data-i18n="cta_eyebrow">Start Today</div>
+    <h2 class="cta-headline reveal d1" data-i18n="cta_headline">Ready to perfect your last mile?</h2>
+    <p class="cta-sub reveal d2" data-i18n="cta_sub">Join 60+ enterprises using ThunderSnow to deliver faster, smarter, and at scale. No setup fee. Live within 48 hours.</p>
+    <div class="cta-actions reveal d3">
+      <a href="#contact-us" class="btn-primary">
+        <span data-i18n="cta_btn_demo">Request a Demo</span>
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <path d="M1 7h12M8 3l5 4-5 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+      <a href="#pricing" class="btn-secondary" data-i18n="cta_btn_pricing">View Pricing</a>
+    </div>
+    <div class="cta-note reveal d4" data-i18n="cta_note">No credit card required &nbsp;·&nbsp; SOC 2 Certified &nbsp;·&nbsp; Cancel anytime</div>
+  </section>
+
+  <!-- =============================================
+       PRICING
+  ============================================= -->
+  <section id="pricing" class="pricing-section">
+    <div class="pricing-inner">
+      <div class="section-eyebrow reveal" style="display:inline-flex; margin-bottom:24px;" data-i18n="price_eyebrow">Pricing</div>
+      <h2 class="pricing-headline reveal d1" data-i18n-html="price_headline">Custom pricing for<br>your business.</h2>
+      <p class="pricing-sub reveal d2" data-i18n="price_sub">Every business has different delivery volumes, coverage areas, and SLA requirements. We build a plan around your needs — not the other way around.</p>
+
+      <div class="pricing-features reveal d2">
+        <div class="pricing-tag"><span class="pricing-tag-dot"></span><span data-i18n="price_tag1">No hidden fees</span></div>
+        <div class="pricing-tag"><span class="pricing-tag-dot"></span><span data-i18n="price_tag2">Volume-based rates</span></div>
+        <div class="pricing-tag"><span class="pricing-tag-dot"></span><span data-i18n="price_tag3">Flexible contracts</span></div>
+        <div class="pricing-tag"><span class="pricing-tag-dot"></span><span data-i18n="price_tag4">Same-day options</span></div>
+        <div class="pricing-tag"><span class="pricing-tag-dot"></span><span data-i18n="price_tag5">Dedicated account manager</span></div>
+      </div>
+
+      <div class="pricing-cta-group reveal d3">
+        <a href="#contact-us" class="btn-primary">
+          <span data-i18n="price_btn_quote">Get a Quote</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="https://wa.me/966569915947" target="_blank" rel="noopener" class="btn-secondary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#25D366" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.121 1.532 5.849L.057 23.268a.75.75 0 0 0 .906.919l5.487-1.44A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.944 9.944 0 0 1-5.031-1.362l-.361-.214-3.737.979 1.004-3.648-.235-.375A9.944 9.944 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+          <span data-i18n="price_btn_call_label">Contact Us</span>
+        </a>
+        <a href="mailto:info@thundersnowsa.com" class="btn-secondary">
+          info@thundersnowsa.com
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================
+       CONTACT US
+  ============================================= -->
+  <section id="contact-us" class="contact-section">
+    <div class="contact-inner">
+
+      <!-- Left: info -->
+      <div class="contact-left">
+        <div class="section-eyebrow reveal" data-i18n="contact_eyebrow">Contact Us</div>
+        <h2 class="contact-headline reveal d1" data-i18n="contact_headline">Get in touch with us.</h2>
+        <p class="contact-sub reveal d2" data-i18n="contact_sub">We're based in Dammam, Saudi Arabia. Reach out by phone or email — we're here to help with your delivery needs.</p>
+
+        <div class="contact-details">
+
+          <a href="https://wa.me/966569915947" target="_blank" rel="noopener" class="contact-item reveal">
+            <div class="contact-item-icon whatsapp">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                <path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.121 1.532 5.849L.057 23.268a.75.75 0 0 0 .906.919l5.487-1.44A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.944 9.944 0 0 1-5.031-1.362l-.361-.214-3.737.979 1.004-3.648-.235-.375A9.944 9.944 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/>
+              </svg>
+            </div>
+            <div>
+              <div class="contact-item-label" data-i18n="contact_phone_label">WhatsApp</div>
+            </div>
+          </a>
+
+          <a href="mailto:info@thundersnowsa.com" class="contact-item reveal d1">
+            <div class="contact-item-icon gold">✉️</div>
+            <div>
+              <div class="contact-item-label" data-i18n="contact_email_label">Email</div>
+              <div class="contact-item-value">info@thundersnowsa.com</div>
+            </div>
+          </a>
+
+          <div class="contact-item reveal d2">
+            <div class="contact-item-icon green">📍</div>
+            <div>
+              <div class="contact-item-label" data-i18n="contact_location_label">Location</div>
+              <div class="contact-item-value" data-i18n="contact_location_value">Dammam, Saudi Arabia</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Right: map + hours -->
+      <div class="contact-right reveal d2">
+
+        <div class="contact-map">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3576.5!2d50.103!3d26.432!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjbCsDI1JzU1LjIiTiA1MMKwMDYnMTAuOCJF!5e0!3m2!1sen!2ssa!4v1"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
+        </div>
+
+        <div class="hours-card">
+          <div class="hours-title" data-i18n="hours_title">Business Hours</div>
+          <div class="hours-row">
+            <span class="hours-day" data-i18n="hours_days">Sunday – Thursday</span>
+            <span class="hours-time phone-ltr">09:00 AM – 05:00 PM</span>
+          </div>
+          <div class="hours-row">
+            <span class="hours-day" data-i18n="hours_fri">Friday</span>
+            <span class="hours-closed" data-i18n="hours_closed">Closed</span>
+          </div>
+          <div class="hours-row">
+            <span class="hours-day" data-i18n="hours_sat">Saturday</span>
+            <span class="hours-closed" data-i18n="hours_closed2">Closed</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================
+       FOOTER
+  ============================================= -->
+  <div class="footer-wrap">
+    <div class="footer-brand-block">
+      <div class="footer-logo">
+        <img src="logo.svg" alt="ThunderSnow" class="logo-img footer-logo-img" height="48">
+      </div>
+      <div class="footer-tagline" data-i18n="footer_tagline">The tech-first last-mile delivery platform built for modern commerce and enterprise logistics.</div>
+      <div class="footer-badge-row">
+        <div class="footer-badge">SOC 2 Type II</div>
+        <div class="footer-badge">ISO 27001</div>
+        <div class="footer-badge">GDPR</div>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-head" data-i18n="footer_col_services">Services</div>
+      <ul class="footer-links">
+        <li><a href="#services" data-i18n="footer_svc1">Same-Day Delivery</a></li>
+        <li><a href="tracking.html" data-i18n="footer_svc2">Live Tracking</a></li>
+        <li><a href="#services" data-i18n="footer_svc3">Fleet Intelligence</a></li>
+        <li><a href="#services" data-i18n="footer_svc4">Proof of Delivery</a></li>
+        <li><a href="#services" data-i18n="footer_svc5">Route Optimization</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-head" data-i18n="footer_col_company">Company</div>
+      <ul class="footer-links">
+        <li><a href="#contact-us" data-i18n="footer_co1">About</a></li>
+        <li><a href="#contact-us" data-i18n="footer_co2">Careers</a></li>
+        <li><a href="#contact-us" data-i18n="footer_co3">Blog</a></li>
+        <li><a href="#contact-us" data-i18n="footer_co4">Press</a></li>
+        <li><a href="#contact-us" data-i18n="footer_co5">Contact</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-head" data-i18n="footer_col_resources">Resources</div>
+      <ul class="footer-links">
+        <li><a href="#network" data-i18n="footer_res1">Coverage Map</a></li>
+        <li><a href="#pricing" data-i18n="footer_res2">Pricing</a></li>
+        <li><a href="#pricing" data-i18n="footer_res3">SLA Guarantee</a></li>
+        <li><a href="#contact-us" data-i18n="footer_res4">Security</a></li>
+        <li><a href="#contact-us" data-i18n="footer_res5">Privacy Policy</a></li>
+        <li><a href="#contact-us" data-i18n="footer_res6">Terms of Service</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="footer-copy" data-i18n="footer_copy">&copy; 2026 ThunderSnow Technologies, Inc. All rights reserved.</div>
+    <div class="footer-copy" data-i18n="footer_tagline2">Made with precision &nbsp;&#183;&nbsp; Delivered at scale</div>
+  </div>
+
+  <!-- =============================================
+       JAVASCRIPT
+  ============================================= -->
+  <script>
+    // ---- Scroll reveal ----
+    const reveals = document.querySelectorAll('.reveal');
+    const revealObs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+    reveals.forEach(el => revealObs.observe(el));
+
+    // Trigger hero elements immediately
+    setTimeout(() => {
+      document.querySelectorAll('.hero .reveal').forEach(el => el.classList.add('in-view'));
+    }, 80);
+
+    // ---- Progress bars — animate on visibility ----
+    const fills = document.querySelectorAll('.progress-fill');
+    const fillObs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          const target = el.dataset.width + '%';
+          el.style.width = '0%';
+          // Force reflow before animating
+          void el.offsetWidth;
+          requestAnimationFrame(() => { el.style.width = target; });
+          fillObs.unobserve(el);
+        }
+      });
+    }, { threshold: 0.4 });
+
+    fills.forEach(bar => {
+      // Set initial width for hero bars that are visible immediately
+      if (bar.closest('.hero')) {
+        const target = bar.dataset.width + '%';
+        setTimeout(() => { bar.style.width = target; }, 500);
+      } else {
+        fillObs.observe(bar);
+      }
+    });
+
+    // ---- Testimonial drag scroll ----
+    const tScroll = document.getElementById('tScroll');
+    let isDragging = false, startX, scrollLeft;
+
+    tScroll.addEventListener('mousedown', e => {
+      isDragging = true;
+      startX = e.pageX - tScroll.offsetLeft;
+      scrollLeft = tScroll.scrollLeft;
+      tScroll.style.cursor = 'grabbing';
+    });
+
+    tScroll.addEventListener('mouseleave', () => {
+      isDragging = false;
+      tScroll.style.cursor = 'grab';
+    });
+
+    tScroll.addEventListener('mouseup', () => {
+      isDragging = false;
+      tScroll.style.cursor = 'grab';
+    });
+
+    tScroll.addEventListener('mousemove', e => {
+      if (!isDragging) return;
+      e.preventDefault();
+      const x = e.pageX - tScroll.offsetLeft;
+      const walk = (x - startX) * 1.4;
+      tScroll.scrollLeft = scrollLeft - walk;
+    });
+
+    // ---- Nav shrink on scroll ----
+    const navWrapper = document.getElementById('navWrapper');
+    window.addEventListener('scroll', () => {
+      navWrapper.style.paddingTop = window.scrollY > 40 ? '12px' : '20px';
+    }, { passive: true });
+
+    // ---- Scroll video story ----
+    (function () {
+      const section     = document.getElementById('scrollStory');
+      const video       = document.getElementById('storyVideo');
+      const progressBar = document.getElementById('storyProgressBar');
+      const panelEls    = [
+        document.getElementById('storyPanel1'),
+        document.getElementById('storyPanel2'),
+        document.getElementById('storyPanel3'),
+      ];
+
+      // Show video and set slow playback rate
+      video.addEventListener('canplay', () => {
+        video.playbackRate = 1.0;
+        video.classList.add('ready');
+      });
+
+      const windows = [
+        [0.02, 0.36],
+        [0.33, 0.67],
+        [0.64, 0.98],
+      ];
+
+      // Update panels and progress bar based on scroll position only
+      function onScroll() {
+        const rect       = section.getBoundingClientRect();
+        const scrollable = section.offsetHeight - window.innerHeight;
+        const progress   = Math.max(0, Math.min(1, -rect.top / scrollable));
+
+        progressBar.style.transform = `scaleX(${progress})`;
+
+        windows.forEach(([start, end], i) => {
+          panelEls[i].classList.toggle('active', progress >= start && progress <= end);
+        });
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+
+      // Fix progress bar to use transform-origin left
+      progressBar.style.transformOrigin = 'left center';
+      progressBar.style.transform = 'scaleX(0)';
+      progressBar.style.width = '100%';
+
+    })();
+  </script>
+
+  <script>
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const mobileMenu   = document.getElementById('mobileMenu');
+
+    hamburgerBtn.addEventListener('click', () => {
+      const isOpen = mobileMenu.classList.toggle('open');
+      hamburgerBtn.classList.toggle('open', isOpen);
+    });
+
+    function closeMobileMenu() {
+      mobileMenu.classList.remove('open');
+      hamburgerBtn.classList.remove('open');
+    }
+
+    // Close when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!hamburgerBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
+        closeMobileMenu();
+      }
+    });
+  </script>
+
+  <script>
+    // ── Arabic / English i18n ─────────────────────────────────────────────────
+    const translations = {
+      en: {
+        // Nav
+        nav_services: 'Services', nav_network: 'Network', nav_pricing: 'Pricing',
+        nav_track: 'Track', nav_track_full: 'Track Shipment', nav_contact: 'Contact',
+        nav_cta: 'Get Started',
+        // Hero
+        hero_headline: 'The last<br>mile,<br><span class="accent-word">perfected.</span>',
+        hero_sub: 'ThunderSnow delivers enterprise-grade last-mile logistics powered by intelligent routing, real-time visibility, and a courier network built to scale with your demand.',
+        hero_btn_start: 'Start Delivering', hero_btn_how: 'Track your Shipment',
+        // Stats
+        stat_deliveries: 'Shipments / month', stat_rating: 'Customer rating',
+        stat_setup: 'Setup fee', stat_support: 'Support coverage', stat_clients: 'Enterprise clients',
+        // Scroll panels
+        p1_eyebrow: 'Critical Cargo', p1_headline: "Some deliveries can't wait a minute.",
+        p1_body: 'When every second counts, we answer. ThunderSnow handles time-critical shipments across medical, pharmaceutical, and emergency supply chains.',
+        p1_item1: 'Insulin & prescription medication', p1_item2: 'Surgical instruments & implants', p1_item3: 'Emergency parts & components',
+        p2_eyebrow: 'Everyday Essentials', p2_headline: 'The moments that matter most.',
+        p2_body: "Birthday flowers. Fresh groceries. A gift that has to arrive before the party starts. We treat every package like it's irreplaceable — because to someone, it is.",
+        p2_item1: 'Same-day grocery & meal kits', p2_item2: 'Gifts, flowers & celebratory orders', p2_item3: 'Electronics & consumer goods',
+        p3_eyebrow: 'Enterprise Scale', p3_headline: 'Millions of deliveries. Zero excuses.',
+        p3_body: "Retail replenishment. B2B logistics. High-volume reverse returns. Whatever the load, ThunderSnow's intelligent network scales to meet it without blinking.",
+        p3_item1: 'Retail & e-commerce replenishment', p3_item2: 'Industrial & manufacturing supply', p3_item3: 'Bulk returns & reverse logistics',
+        // Services
+        svc_eyebrow: 'Core Capabilities', svc_headline: 'Everything your last mile demands.',
+        svc_sub: 'From intelligent routing to real-time visibility, ThunderSnow gives you the infrastructure to deliver at any scale, with zero compromise on reliability.',
+        svc1_title: 'Intelligent Routing', svc1_desc: 'AI-optimized delivery routes adapt in real time to traffic, weather, and driver performance. Reduce miles driven by up to 28% from day one.',
+        svc2_title: 'Real-Time Tracking', svc2_desc: 'Sub-minute location updates for every package. Branded tracking pages, SMS notifications, and delivery window predictions — all included.',
+        svc3_title: 'Proof of Delivery', svc3_desc: 'Photo capture, digital signatures, and geofenced confirmation — every handoff documented and instantly accessible from your operations dashboard.',
+        svc4_title: 'Fleet Intelligence', svc4_desc: 'Real-time driver performance scoring, fuel efficiency tracking, and predictive maintenance alerts across your entire fleet.',
+        svc5_title: 'Carbon-Neutral Delivery', svc5_desc: 'Offset every delivery automatically. Access our fleet of e-cargo bikes and EVs for urban areas, and receive certified carbon reports for your sustainability disclosures and ESG reporting obligations.',
+        // Network
+        net_eyebrow: 'Network Coverage', net_headline: 'Eastern Region, Saudi Arabia.',
+        net_sub: 'From the industrial corridors of Jubail to the heart of Dammam and Al Khobar — ThunderSnow delivers across the entire Eastern Region.',
+        net_cities: 'Cities covered', net_coverage: 'Regional coverage', net_time: 'Avg delivery time',
+        // Cities
+        city_dammam: 'Dammam', city_khobar: 'Al Khobar', city_dhahran: 'Dhahran',
+        city_jubail: 'Jubail', city_qatif: 'Qatif', city_hofuf: 'Hofuf (Al-Ahsa)',
+        city_mubarraz: 'Al Mubarraz', city_abqaiq: 'Abqaiq', city_rastanura: 'Ras Tanura',
+        city_safwa: 'Safwa', city_saihat: 'Saihat', city_tarut: 'Tarut',
+        city_alqatif: 'Al Qatif', city_nairiyah: 'Nairiyah', city_oyoun: 'Al Oyoun',
+        city_rasalkhair: 'Ras Al-Khair',
+        // Testimonials
+        test_eyebrow: 'What Clients Say', test_headline: "Trusted by operators who can't afford downtime.",
+        quote_fatimah: '"From the very first call, the entire process was seamless. Pickup was on time, the delivery was handled with care, and the communication was excellent throughout."',
+        quote_ali: '"Outstanding service from start to finish. The team was professional, responsive, and genuinely attentive. A level of care that is rare in this industry."',
+        quote_taher: '"Every delivery has been handled with real professionalism and dedication. The quality of service is consistent and reflects a team that truly takes pride in their work."',
+        quote_hissah: '"Reliable, timely, and professional in every interaction. The delivery driver was courteous and handled the package with great care. Highly recommend ThunderSnow."',
+        // CTA
+        cta_eyebrow: 'Start Today', cta_headline: 'Ready to perfect your last mile?',
+        cta_sub: 'Join 60+ enterprises using ThunderSnow to deliver faster, smarter, and at scale. No setup fee. Live within 48 hours.',
+        cta_btn_demo: 'Request a Demo', cta_btn_pricing: 'View Pricing',
+        cta_note: 'No credit card required · SOC 2 Certified · Cancel anytime',
+        // Pricing
+        price_eyebrow: 'Pricing', price_headline: 'Custom pricing for<br>your business.',
+        price_sub: 'Every business has different delivery volumes, coverage areas, and SLA requirements. We build a plan around your needs — not the other way around.',
+        price_tag1: 'No hidden fees', price_tag2: 'Volume-based rates', price_tag3: 'Flexible contracts',
+        price_tag4: 'Same-day options', price_tag5: 'Dedicated account manager',
+        price_btn_quote: 'Get a Quote', price_btn_call_label: 'Contact Us',
+        // Contact
+        contact_eyebrow: 'Contact Us', contact_headline: 'Get in touch with us.',
+        contact_sub: "We're based in Dammam, Saudi Arabia. Reach out by phone or email — we're here to help with your delivery needs.",
+        contact_phone_label: 'Contact Us', contact_wa_chat: 'Chat on WhatsApp', contact_email_label: 'Email',
+        contact_location_label: 'Location', contact_location_value: 'Dammam, Saudi Arabia',
+        hours_title: 'Business Hours', hours_days: 'Sunday – Thursday',
+        hours_fri: 'Friday', hours_sat: 'Saturday', hours_closed: 'Closed', hours_closed2: 'Closed',
+        // Footer
+        footer_tagline: 'The tech-first delivery platform built for modern commerce and enterprise logistics.',
+        footer_col_services: 'Services', footer_col_company: 'Company', footer_col_resources: 'Resources',
+        footer_svc1: 'Same-Day Delivery', footer_svc2: 'Live Tracking', footer_svc3: 'Fleet Intelligence',
+        footer_svc4: 'Proof of Delivery', footer_svc5: 'Route Optimization',
+        footer_co1: 'About', footer_co2: 'Careers', footer_co3: 'Blog', footer_co4: 'Press', footer_co5: 'Contact',
+        footer_res1: 'Coverage Map', footer_res2: 'Pricing', footer_res3: 'SLA Guarantee',
+        footer_res4: 'Security', footer_res5: 'Privacy Policy', footer_res6: 'Terms of Service',
+        footer_copy: '© 2026 ThunderSnow Technologies, Inc. All rights reserved.',
+        footer_tagline2: 'Made with precision · Delivered at scale',
+      },
+      ar: {
+        // Nav — shorter CTA to avoid nav overflow
+        nav_services: 'الخدمات', nav_network: 'شبكتنا', nav_pricing: 'الأسعار',
+        nav_track: 'تتبع', nav_track_full: 'تتبع الشحنة', nav_contact: 'تواصل',
+        nav_cta: 'ابدأ',
+        // Hero — use "التوصيل" instead of "الميل الأخير"
+        hero_headline: 'التوصيل،<br>بكل<br><span class="accent-word">إتقان.</span>',
+        hero_sub: 'ثاندر سنو تقدم خدمات لوجستيات التوصيل على مستوى المؤسسات، مدعومةً بتحسين الطرق الذكي، والرؤية الفورية، وشبكة واسعة مصممة للتوسع مع طلبك.',
+        hero_btn_start: 'ابدأ التوصيل', hero_btn_how: 'تتبع شحنتك',
+        // Stats
+        stat_deliveries: 'شحنة شهرياً', stat_rating: 'تقييم العملاء',
+        stat_setup: 'رسوم إنشاء', stat_support: 'دعم متواصل', stat_clients: 'عميل مؤسسي',
+        // Scroll panels
+        p1_eyebrow: 'الشحنات الحرجة', p1_headline: 'بعض التوصيلات لا تتحمل التأخير.',
+        p1_body: 'عندما تُعدّ كل ثانية، نحن هنا. تتعامل ثاندر سنو مع الشحنات الحرجة عبر سلاسل التوريد الطبية والدوائية وطوارئ الإمداد.',
+        p1_item1: 'الأنسولين والأدوية الموصوفة', p1_item2: 'الأدوات الجراحية والغرسات', p1_item3: 'قطع الغيار العاجلة والمكونات',
+        p2_eyebrow: 'احتياجات يومية', p2_headline: 'اللحظات التي تهم أكثر.',
+        p2_body: 'ورود عيد الميلاد. البقالة الطازجة. هدية يجب أن تصل قبل بدء الحفلة. نتعامل مع كل طرد كأنه لا مثيل له — لأنه كذلك بالنسبة لشخص ما.',
+        p2_item1: 'البقالة وطلبات الوجبات في نفس اليوم', p2_item2: 'الهدايا والورود والطلبات الاحتفالية', p2_item3: 'الإلكترونيات والسلع الاستهلاكية',
+        p3_eyebrow: 'على نطاق المؤسسات', p3_headline: 'الملايين من التوصيلات. بلا أعذار.',
+        p3_body: 'تجديد مخزون التجزئة. لوجستيات B2B. المرتجعات بحجم كبير. مهما كان الحجم، تتوسع شبكة ثاندر سنو الذكية لتلبية الطلب دون توقف.',
+        p3_item1: 'تجديد مخزون التجزئة والتجارة الإلكترونية', p3_item2: 'الإمداد الصناعي والتصنيع', p3_item3: 'المرتجعات الكبيرة واللوجستيات العكسية',
+        // Services
+        svc_eyebrow: 'القدرات الأساسية', svc_headline: 'كل ما تحتاجه عمليات توصيلك.',
+        svc_sub: 'من تحسين المسار الذكي إلى الرؤية الفورية، توفر ثاندر سنو البنية التحتية للتوصيل بأي حجم دون تنازل عن الموثوقية.',
+        svc1_title: 'تحسين المسار الذكي', svc1_desc: 'مسارات توصيل مُحسَّنة بالذكاء الاصطناعي تتكيف فورياً مع حركة المرور والطقس وأداء السائقين. وفِّر حتى 28% من المسافة المقطوعة منذ اليوم الأول.',
+        svc2_title: 'التتبع الفوري', svc2_desc: 'تحديثات موقع دقيقة لكل طرد. صفحات تتبع مخصصة، إشعارات SMS، وتنبؤات بنافذة التسليم — كل ذلك مُدرج.',
+        svc3_title: 'إثبات التسليم', svc3_desc: 'التقاط الصور، والتوقيعات الرقمية، والتأكيد الجغرافي — كل عملية تسليم موثقة ومتاحة فوراً من لوحة التحكم.',
+        svc4_title: 'ذكاء الأسطول', svc4_desc: 'تقييم أداء السائقين في الوقت الفعلي، وتتبع كفاءة الوقود، وتنبيهات الصيانة التنبؤية عبر أسطولك بالكامل.',
+        svc5_title: 'توصيل محايد للكربون', svc5_desc: 'عوِّض كل عملية توصيل تلقائياً. استخدم أسطولنا من دراجات الشحن الكهربائية والسيارات الكهربائية للمناطق الحضرية، واحصل على تقارير كربون معتمدة.',
+        // Network
+        net_eyebrow: 'تغطية الشبكة', net_headline: 'المنطقة الشرقية، المملكة العربية السعودية.',
+        net_sub: 'من ممرات الجبيل الصناعية إلى قلب الدمام والخبر — ثاندر سنو توصل عبر المنطقة الشرقية بأكملها.',
+        net_cities: 'مدينة مشمولة', net_coverage: 'تغطية إقليمية', net_time: 'متوسط وقت التوصيل',
+        // Cities in Arabic
+        city_dammam: 'الدمام', city_khobar: 'الخبر', city_dhahran: 'الظهران',
+        city_jubail: 'الجبيل', city_qatif: 'القطيف', city_hofuf: 'الهفوف (الأحساء)',
+        city_mubarraz: 'المبرز', city_abqaiq: 'بقيق', city_rastanura: 'رأس تنورة',
+        city_safwa: 'صفوى', city_saihat: 'سيهات', city_tarut: 'تاروت',
+        city_alqatif: 'القطيف', city_nairiyah: 'النعيرية', city_oyoun: 'العيون',
+        city_rasalkhair: 'رأس الخير',
+        // Testimonials
+        test_eyebrow: 'ماذا يقول عملاؤنا', test_headline: 'موثوق به من المشغلين الذين لا يتحملون التوقف.',
+        quote_fatimah: '«منذ الاتصال الأول، كانت العملية بأكملها سلسة. الاستلام كان في الوقت المحدد، والتوصيل جرى بعناية، والتواصل كان ممتازاً طوال الوقت.»',
+        quote_ali: '«خدمة استثنائية من البداية إلى النهاية. الفريق كان محترفاً ومتجاوباً ومهتماً حقاً. مستوى من الاهتمام نادر في هذا المجال.»',
+        quote_taher: '«كل عملية توصيل جرت باحترافية عالية وتفانٍ حقيقي. جودة الخدمة ثابتة وتعكس فريقاً يفخر فعلاً بعمله.»',
+        quote_hissah: '«موثوق وسريع ومحترف في كل تعامل. السائق كان مؤدباً وتعامل مع الطرد بعناية فائقة. أنصح بثاندر سنو بشدة.»',
+        // CTA
+        cta_eyebrow: 'ابدأ اليوم', cta_headline: 'هل أنت مستعد لإتقان عمليات توصيلك؟',
+        cta_sub: 'انضم إلى أكثر من 60 شركة تستخدم ثاندر سنو للتوصيل بشكل أسرع وأذكى وبحجم كبير. بدون رسوم إعداد. جاهز خلال 48 ساعة.',
+        cta_btn_demo: 'اطلب عرضاً تجريبياً', cta_btn_pricing: 'عرض الأسعار',
+        cta_note: 'لا يلزم بطاقة ائتمان · معتمد SOC 2 · إلغاء في أي وقت',
+        // Pricing
+        price_eyebrow: 'الأسعار', price_headline: 'أسعار مخصصة<br>لعملك.',
+        price_sub: 'كل عمل له احتياجات توصيل مختلفة ومناطق تغطية ومتطلبات SLA. نبني خطة حول احتياجاتك — لا العكس.',
+        price_tag1: 'بدون رسوم خفية', price_tag2: 'أسعار حسب الحجم', price_tag3: 'عقود مرنة',
+        price_tag4: 'خيارات توصيل في نفس اليوم', price_tag5: 'مدير حساب مخصص',
+        price_btn_quote: 'احصل على عرض سعر', price_btn_call_label: 'تواصل معنا',
+        // Contact
+        contact_eyebrow: 'تواصل معنا', contact_headline: 'تواصل مع فريقنا.',
+        contact_sub: 'نحن في الدمام، المملكة العربية السعودية. تواصل معنا عبر الهاتف أو البريد الإلكتروني — نحن هنا لمساعدتك في احتياجات التوصيل.',
+        contact_phone_label: 'تواصل معنا', contact_wa_chat: 'تواصل عبر واتساب', contact_email_label: 'البريد الإلكتروني',
+        contact_location_label: 'الموقع', contact_location_value: 'الدمام، المملكة العربية السعودية',
+        hours_title: 'ساعات العمل', hours_days: 'الأحد – الخميس',
+        hours_fri: 'الجمعة', hours_sat: 'السبت', hours_closed: 'مغلق', hours_closed2: 'مغلق',
+        // Footer
+        footer_tagline: 'منصة التوصيل الأولى بالتقنية، مبنية للتجارة الحديثة ولوجستيات المؤسسات.',
+        footer_col_services: 'الخدمات', footer_col_company: 'الشركة', footer_col_resources: 'الموارد',
+        footer_svc1: 'التوصيل في نفس اليوم', footer_svc2: 'التتبع المباشر', footer_svc3: 'ذكاء الأسطول',
+        footer_svc4: 'إثبات التسليم', footer_svc5: 'تحسين المسار',
+        footer_co1: 'من نحن', footer_co2: 'الوظائف', footer_co3: 'المدونة', footer_co4: 'الصحافة', footer_co5: 'تواصل معنا',
+        footer_res1: 'خريطة التغطية', footer_res2: 'الأسعار', footer_res3: 'ضمان SLA',
+        footer_res4: 'الأمان', footer_res5: 'سياسة الخصوصية', footer_res6: 'شروط الخدمة',
+        footer_copy: '© 2026 ثاندر سنو تكنولوجيز. جميع الحقوق محفوظة.',
+        footer_tagline2: 'صُنع بدقة · يُسلَّم على نطاق واسع',
+      }
+    };
+
+    function applyTranslations(lang) {
+      const t = translations[lang];
+      // textContent elements
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        if (t[key] !== undefined) el.textContent = t[key];
+      });
+      // innerHTML elements (hero headline, pricing headline)
+      document.querySelectorAll('[data-i18n-html]').forEach(el => {
+        const key = el.dataset.i18nHtml;
+        if (t[key] !== undefined) el.innerHTML = t[key];
+      });
+      // RTL / LTR
+      document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+      document.documentElement.setAttribute('lang', lang);
+      // Lang button label
+      document.getElementById('langBtn').textContent = lang === 'ar' ? 'English' : 'عربي';
+    }
+
+    function toggleLanguage() {
+      const current = localStorage.getItem('lang') || 'en';
+      const next = current === 'en' ? 'ar' : 'en';
+      localStorage.setItem('lang', next);
+      applyTranslations(next);
+    }
+
+    // Init on page load
+    (function () {
+      const saved = localStorage.getItem('lang') || 'en';
+      if (saved === 'ar') applyTranslations('ar');
+    })();
+  </script>
+</body>
+</html>
