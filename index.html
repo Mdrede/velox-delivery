@@ -2722,4 +2722,9 @@
 
     // Init on page load
     (function () {
-      const saved = localStorage.getItem('lan
+      const saved = localStorage.getItem('lang') || 'en';
+      if (saved === 'ar') applyTranslations('ar');
+    })();
+  </script>
+</body>
+</html>
