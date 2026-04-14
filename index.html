@@ -537,16 +537,14 @@
        SCROLL VIDEO STORY
     =========================================== */
     .scroll-story {
-      height: 600vh;
       position: relative;
     }
 
     .scroll-story-sticky {
-      position: sticky;
-      top: 0;
-      height: 100vh;
+      position: relative;
+      height: 65vh;
       overflow: hidden;
-      background: var(--bg);
+      background: #0a0a0a;
     }
 
     .scroll-story-video {
@@ -557,57 +555,59 @@
       object-fit: cover;
       opacity: 0;
       transition: opacity 0.8s ease;
-      will-change: transform;
     }
 
     .scroll-story-video.ready {
       opacity: 1;
     }
 
-    /* Same inward-masking vignette treatment as hero */
     .scroll-story-vignette {
       position: absolute;
       inset: 0;
       z-index: 1;
       pointer-events: none;
       background:
-        linear-gradient(to bottom, #FFFFFF 0%, transparent 18%, transparent 72%, #FFFFFF 100%),
-        linear-gradient(to right,  #FFFFFF 0%, transparent 16%, transparent 84%, #FFFFFF 100%);
+        linear-gradient(to bottom, rgba(255,255,255,0.05) 0%, transparent 20%, transparent 60%, rgba(10,10,10,0.85) 100%),
+        linear-gradient(to right,  rgba(255,255,255,0.02) 0%, transparent 15%, transparent 85%, rgba(255,255,255,0.02) 100%);
     }
 
-    /* Text panels */
-    .scroll-panel {
-      position: absolute;
-      inset: 0;
-      z-index: 2;
-      display: flex;
-      align-items: center;
-      padding: 0 8%;
-      pointer-events: none;
-      /* default: left-aligned */
-      justify-content: flex-start;
+    /* Floating cards below video */
+    .story-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      padding: 48px 5% 64px;
+      background: var(--bg);
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
-    .scroll-panel.panel-right  { justify-content: flex-end; }
-    .scroll-panel.panel-center { justify-content: center; }
-
-    .panel-content {
-      max-width: 420px;
-      background: rgba(12, 12, 14, 0.72);
-      backdrop-filter: blur(22px);
-      -webkit-backdrop-filter: blur(22px);
-      border: 1px solid rgba(255, 255, 255, 0.07);
+    .story-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
       border-radius: var(--radius-xl);
-      padding: 40px 44px;
-      /* Hidden state */
+      padding: 40px 40px 36px;
+      box-shadow: var(--shadow-md);
       opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 0.55s var(--ease-out), transform 0.55s var(--ease-out);
+      transform: translateY(36px);
+      transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out), box-shadow 0.3s ease;
     }
 
-    .scroll-panel.active .panel-content {
+    .story-card:nth-child(2) { transition-delay: 0.12s; }
+    .story-card:nth-child(3) { transition-delay: 0.06s; grid-column: 1 / -1; max-width: 560px; margin: 0 auto; width: 100%; }
+
+    .story-card.revealed {
       opacity: 1;
       transform: translateY(0);
+    }
+
+    .story-card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-4px);
+    }
+
+    .story-card.revealed:hover {
+      transform: translateY(-4px);
     }
 
     .panel-eyebrow {
@@ -616,24 +616,24 @@
       font-weight: 700;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: #41A5DD;
+      color: var(--brand);
       margin-bottom: 14px;
     }
 
     .panel-headline {
       font-family: var(--font-display);
       font-weight: 800;
-      font-size: clamp(28px, 3vw, 40px);
-      letter-spacing: -0.04em;
-      line-height: 1.05;
-      color: #FFFFFF;
-      margin-bottom: 14px;
+      font-size: clamp(22px, 2.2vw, 30px);
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      color: var(--text-1);
+      margin-bottom: 12px;
     }
 
     .panel-body {
-      font-size: 15px;
-      color: rgba(255, 255, 255, 0.78);
-      line-height: 1.72;
+      font-size: 14px;
+      color: var(--text-2);
+      line-height: 1.7;
     }
 
     .panel-items {
@@ -647,29 +647,30 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      font-size: 14px;
-      color: rgba(255, 255, 255, 0.72);
+      font-size: 13px;
+      color: var(--text-2);
     }
 
     .panel-item::before {
       content: '';
-      width: 4px;
-      height: 4px;
-      background: #41A5DD;
+      width: 5px;
+      height: 5px;
+      background: var(--brand);
       border-radius: 50%;
       flex-shrink: 0;
     }
 
-    /* Thin progress bar at bottom of sticky viewport */
+    /* Thin progress bar at bottom of video */
     .scroll-story-progress {
       position: absolute;
       bottom: 0;
       left: 0;
-      height: 2px;
-      width: 0%;
+      height: 3px;
+      width: 100%;
       background: var(--brand);
       z-index: 10;
-      transition: width 0.08s linear;
+      transform: scaleX(0);
+      transform-origin: left center;
     }
 
     /* ===========================================
@@ -1540,6 +1541,8 @@
        RESPONSIVE
     =========================================== */
     @media (max-width: 960px) {
+      .story-cards { padding: 40px 24px 56px; gap: 20px; }
+
       .hero {
         padding: 120px 24px 60px;
       }
@@ -1590,25 +1593,12 @@
       nav { padding: 6px 8px 6px 14px; }
       .nav-cta { display: none; }
       .hero-video { opacity: 0.35; object-fit: contain; background: #fff; }
-      .scroll-story { height: 300vh; }
-      .scroll-story-video { object-fit: cover; }
-      .scroll-panel {
-        align-items: flex-end;
-        justify-content: center !important;
-        padding: 0 16px 32px;
-      }
-      .panel-content {
-        max-width: 100%;
-        width: 100%;
-        padding: 20px 22px;
-        background: rgba(8, 8, 10, 0.55);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border-radius: var(--radius-md);
-      }
+      .scroll-story-sticky { height: 50vw; min-height: 220px; }
+      .story-cards { grid-template-columns: 1fr; padding: 28px 16px 48px; gap: 16px; }
+      .story-card:nth-child(3) { grid-column: 1; max-width: 100%; }
       .panel-headline { font-size: clamp(18px, 5vw, 26px) !important; margin-bottom: 8px; }
-      .panel-body { font-size: 13px !important; margin-bottom: 10px; }
-      .panel-list { font-size: 12px !important; }
+      .panel-body { font-size: 13px !important; }
+      .story-card { padding: 24px 22px; }
       .hero-headline { color: #1A1A1A; }
       .hero-sub { color: #333; }
 
@@ -1939,56 +1929,52 @@
   ============================================= -->
   <section class="scroll-story" id="scrollStory">
     <div class="scroll-story-sticky">
-
       <video class="scroll-story-video" id="storyVideo" preload="auto" muted playsinline autoplay loop>
         <source src="explosion.mp4" type="video/mp4">
       </video>
-
       <div class="scroll-story-vignette"></div>
-
-      <!-- Panel 1 — left — 0%–35% of scroll -->
-      <div class="scroll-panel" id="storyPanel1">
-        <div class="panel-content">
-          <span class="panel-eyebrow" data-i18n="p1_eyebrow">Critical Cargo</span>
-          <div class="panel-headline" data-i18n="p1_headline">Some deliveries can't wait a minute.</div>
-          <p class="panel-body" data-i18n="p1_body">When every second counts, we answer. ThunderSnow handles time-critical shipments across medical, pharmaceutical, and emergency supply chains.</p>
-          <div class="panel-items">
-            <div class="panel-item" data-i18n="p1_item1">Insulin &amp; prescription medication</div>
-            <div class="panel-item" data-i18n="p1_item2">Surgical instruments &amp; implants</div>
-            <div class="panel-item" data-i18n="p1_item3">Emergency parts &amp; components</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Panel 2 — right — 33%–67% of scroll -->
-      <div class="scroll-panel panel-right" id="storyPanel2">
-        <div class="panel-content">
-          <span class="panel-eyebrow" data-i18n="p2_eyebrow">Everyday Essentials</span>
-          <div class="panel-headline" data-i18n="p2_headline">The moments that matter most.</div>
-          <p class="panel-body" data-i18n="p2_body">Birthday flowers. Fresh groceries. A gift that has to arrive before the party starts. We treat every package like it's irreplaceable — because to someone, it is.</p>
-          <div class="panel-items">
-            <div class="panel-item" data-i18n="p2_item1">Same-day grocery &amp; meal kits</div>
-            <div class="panel-item" data-i18n="p2_item2">Gifts, flowers &amp; celebratory orders</div>
-            <div class="panel-item" data-i18n="p2_item3">Electronics &amp; consumer goods</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Panel 3 — left — 65%–98% of scroll -->
-      <div class="scroll-panel" id="storyPanel3">
-        <div class="panel-content">
-          <span class="panel-eyebrow" data-i18n="p3_eyebrow">Enterprise Scale</span>
-          <div class="panel-headline" data-i18n="p3_headline">Millions of deliveries. Zero excuses.</div>
-          <p class="panel-body" data-i18n="p3_body">Retail replenishment. B2B logistics. High-volume reverse returns. Whatever the load, ThunderSnow's intelligent network scales to meet it without blinking.</p>
-          <div class="panel-items">
-            <div class="panel-item" data-i18n="p3_item1">Retail &amp; e-commerce replenishment</div>
-            <div class="panel-item" data-i18n="p3_item2">Industrial &amp; manufacturing supply</div>
-            <div class="panel-item" data-i18n="p3_item3">Bulk returns &amp; reverse logistics</div>
-          </div>
-        </div>
-      </div>
-
       <div class="scroll-story-progress" id="storyProgressBar"></div>
+    </div>
+
+    <!-- Floating cards below video -->
+    <div class="story-cards">
+
+      <!-- Card 1 -->
+      <div class="story-card" id="storyPanel1">
+        <span class="panel-eyebrow" data-i18n="p1_eyebrow">Critical Cargo</span>
+        <div class="panel-headline" data-i18n="p1_headline">Some deliveries can't wait a minute.</div>
+        <p class="panel-body" data-i18n="p1_body">When every second counts, we answer. ThunderSnow handles time-critical shipments across medical, pharmaceutical, and emergency supply chains.</p>
+        <div class="panel-items">
+          <div class="panel-item" data-i18n="p1_item1">Insulin &amp; prescription medication</div>
+          <div class="panel-item" data-i18n="p1_item2">Surgical instruments &amp; implants</div>
+          <div class="panel-item" data-i18n="p1_item3">Emergency parts &amp; components</div>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="story-card" id="storyPanel2">
+        <span class="panel-eyebrow" data-i18n="p2_eyebrow">Everyday Essentials</span>
+        <div class="panel-headline" data-i18n="p2_headline">The moments that matter most.</div>
+        <p class="panel-body" data-i18n="p2_body">Birthday flowers. Fresh groceries. A gift that has to arrive before the party starts. We treat every package like it's irreplaceable — because to someone, it is.</p>
+        <div class="panel-items">
+          <div class="panel-item" data-i18n="p2_item1">Same-day grocery &amp; meal kits</div>
+          <div class="panel-item" data-i18n="p2_item2">Gifts, flowers &amp; celebratory orders</div>
+          <div class="panel-item" data-i18n="p2_item3">Electronics &amp; consumer goods</div>
+        </div>
+      </div>
+
+      <!-- Card 3 — centered below -->
+      <div class="story-card" id="storyPanel3">
+        <span class="panel-eyebrow" data-i18n="p3_eyebrow">Enterprise Scale</span>
+        <div class="panel-headline" data-i18n="p3_headline">Millions of deliveries. Zero excuses.</div>
+        <p class="panel-body" data-i18n="p3_body">Retail replenishment. B2B logistics. High-volume reverse returns. Whatever the load, ThunderSnow's intelligent network scales to meet it without blinking.</p>
+        <div class="panel-items">
+          <div class="panel-item" data-i18n="p3_item1">Retail &amp; e-commerce replenishment</div>
+          <div class="panel-item" data-i18n="p3_item2">Industrial &amp; manufacturing supply</div>
+          <div class="panel-item" data-i18n="p3_item3">Bulk returns &amp; reverse logistics</div>
+        </div>
+      </div>
+
     </div>
   </section>
 
@@ -2512,47 +2498,24 @@
 
     // ---- Scroll video story ----
     (function () {
-      const section     = document.getElementById('scrollStory');
-      const video       = document.getElementById('storyVideo');
-      const progressBar = document.getElementById('storyProgressBar');
-      const panelEls    = [
-        document.getElementById('storyPanel1'),
-        document.getElementById('storyPanel2'),
-        document.getElementById('storyPanel3'),
-      ];
-
-      // Show video and set slow playback rate
+      const video = document.getElementById('storyVideo');
       video.addEventListener('canplay', () => {
         video.playbackRate = 1.0;
         video.classList.add('ready');
       });
 
-      const windows = [
-        [0.02, 0.36],
-        [0.33, 0.67],
-        [0.64, 0.98],
-      ];
-
-      // Update panels and progress bar based on scroll position only
-      function onScroll() {
-        const rect       = section.getBoundingClientRect();
-        const scrollable = section.offsetHeight - window.innerHeight;
-        const progress   = Math.max(0, Math.min(1, -rect.top / scrollable));
-
-        progressBar.style.transform = `scaleX(${progress})`;
-
-        windows.forEach(([start, end], i) => {
-          panelEls[i].classList.toggle('active', progress >= start && progress <= end);
+      // Reveal cards on scroll using IntersectionObserver
+      const cards = document.querySelectorAll('.story-card');
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+            observer.unobserve(entry.target);
+          }
         });
-      }
+      }, { threshold: 0.15 });
 
-      window.addEventListener('scroll', onScroll, { passive: true });
-
-      // Fix progress bar to use transform-origin left
-      progressBar.style.transformOrigin = 'left center';
-      progressBar.style.transform = 'scaleX(0)';
-      progressBar.style.width = '100%';
-
+      cards.forEach(card => observer.observe(card));
     })();
   </script>
 
